@@ -1,0 +1,1378 @@
+12                                                                                                                                                                                                                                                              
+Si	Al	Ti	Fe3	Mg	Fe	Mn	Ca	Na	K	H2O	CO2
+60.09           101.96          79.88           159.69          40.32           71.85           70.94            56.08           61.98           94.2            18.016          44.01                                                            
+1               2               1                 2             1               1               1               1               2               2               1               1   
+0.467390581	0.529256571	0.599236355	0.699417622	0.602802579	0.777244259	0.774429095	0.714657632	0.741819942	0.830106157	0.111012433	0.272915247	1	0.436437932	0.651961424	0.68420741	0.787444256	0.740322345	0.852683175	0.853768886	0.878204006
+-------------------------------------------
+!Predefined components for plotting
+14	Number of predefined components
+!-	Const	Si	Al	Ti	Fe3	Mg	Fe	Mn	Ca	Na	K	H2O	CO2	                                                                                                                                                                           
+Si	0	1	0	0	0	0	0	0	0	0	0	0	0
+Al	0	0	1	0	0	0	0	0	0	0	0	0	0
+Ti	0	0	0	1	0	0	0	0	0	0	0	0	0
+Fe3	0	0	0	0	1	0	0	0	0	0	0	0	0
+Mg	0	0	0	0	0	1	0	0	0	0	0	0	0
+Fe	0	0	0	0	0	0	1	0	0	0	0	0	0
+Mn	0	0	0	0	0	0	0	1	0	0	0	0	0
+Ca	0	0	0	0	0	0	0	0	1	0	0	0	0
+Na	0	0	0	0	0	0	0	0	0	1	0	0	0
+K	0	0	0	0	0	0	0	0	0	0	1	0	0
+H2O	0	0	0	0	0	0	0	0	0	0	0	1	0
+CO2	0	0	0	0	0	0	0	0	0	0	0	0	1
+Al'(Ms)	0	0	.5	0	0	0	0	0	0	0	-1.5	0	0
+Al'(Kfs)	0	0	.5	0	0	0	0	0	0	0	-0.5	0	0
+---------------------------------------
+1               ! Number of "fixed" minerals to read when data file loads
+!Mineral         # entries       entry 1         entry 2
+1008               3               1005            1006              1007          ! Al2SiO5 polymorphs
+---------------------------------------
+!Mineral #       Mineral name                                                                                                                                                                                                                                                                                                                                                                                                    
+!4	3	8	2			! These are key codes for mineral type
+! 	Key codes (4 entries)
+!		#1 Phase components
+!		#2 Input phase data type (replaces specialK)
+!			1 = 1 component SPaC
+!			2 = alpha-beta quartz (SPaC)
+!			3 = multicomponent SPaC
+!			5 = Kspar (order-disorder)
+!			4 = H2O SPaC (Haar)
+!			8 = fixed Al2SiO5 minerals (KAS) - should work for all 3 dataset types
+!			10 = Graphite saturated fluid (Connolly_and_Cesare, 1993 JMG)
+!			101 = 1 component HP98
+!			103 = multicomponent HP98 (includes SF input)
+!			104 = Fluid HP98 (CorK)
+!			105 = Melt HP98
+!			201 = 1 component HP11
+!			203 = multicomponent HP11 (includes SF input)
+!			204 = Fluid HP11 (Pitzer eq)
+!			205 = Melt HP11
+!		#3 of atoms (for multicomponent mineral only. All others are 0)
+!		#4 reciprocal terms (for SPaC multicomponent phases. All other types will be 0) 
+!  C    Si   Al4   AlM1A  MgM1A  FeM1A    AlM1B    KA    NaA	!Names of site atoms	(only for multicomponent minerals k = 3, 11, 21
+!  0    1     2     3       4      5	6      7      8        !Indexes of site atoms
+!        4     4     1       1      1       1      1      1  !Site multiplicities for each site
+! ----------------------------------
+!Comp1 Abb       Comp1 Name                                                                                                                                                                                                                                                                                                                                                                                      
+!H(j/m)          S(j/mK)         V(j/bar)                                                                                                                                        
+!Cp-a          Cp-b          Cp-c          Cp-d          Cp-e    Cp-f            Cp-g           Cp=a + b/T^1/2 + c/T^2 + d/T^3 + e/T + f*T + g*T^2
+!v1             v2             v3             v4    where V(P2,T2) = V(Pr,Tr)*(1 + v1*(T2-Tr) + v2*(T2-Tr)^2 + v3*(P2-Pr) + v4*(P2-Pr)^2)                                                                                                        
+! HP model terms (HPModelswitch + 6 more terms)
+!Composition
+!Ideal activity
+! ASF size parameter  (only for HP11)
+! ---------------- (dashes to separate components)
+!Comp2 Abb       Comp2 Name                                                                                                                                                                                                                                                                                                                                                                                      
+!H(j/m)          S(j/mK)         V(j/bar)                                                                                                                                        
+!Cp-a          Cp-b          Cp-c          Cp-d          Cp-e    Cp-f            Cp-g           Cp=a + b/T^1/2 + c/T^2 + d/T^3 + e/T + f*T + g*T^2
+!v1             v2             v3             v4    where V(P2,T2) = V(Pr,Tr)*(1 + v1*(T2-Tr) + v2*(T2-Tr)^2 + v3*(P2-Pr) + v4*(P2-Pr)^2)                                                                                                        
+! HP model terms (HPModelswitch + 6 more terms)
+!Composition
+!Ideal activity
+! ASF size parameter  (only for HP11)
+!------------------------------
+!	The HP heat capacity expression is
+!	Cp = a + bT + cT-2 + dT-1/2
+!	To use this in Gibbs you need to set the HP terms a,b,c and d to
+!	a = a in Gibbs
+!	b = f in Gibbs		
+!	c = c		
+!	d = b
+!	Or, Gibbs to HP goes (HP is in kJ, Gibbs is in J. Also, HP b term needs to be divided by 10^5 so...)
+!	a = a*1000 in HP
+!	b = d*1000 in HP
+!	c = c*1000 in HP
+!	d = 0
+!	e = 0
+!	f = b/100
+!	g = 0
+!------------------------------
+! Convert Cp from tcds55._p07.txt (Therkak domino) to Gibbs
+!           a               b             c               d                  e
+! C3       1260.20000      0.0038300    -11455000.0      -8237.600           0.00
+!           a               b             c               d                  e      f            g
+!Gibbs     1260.2	-8237.6	       -11455000	  0	             0	    0.00383	  0
+!
+!so
+!	aGibbs = aTD
+!	bGibbs = dTD
+!	cGibbs = cTD
+!	dGibbs = 0
+!	eGibbs = 0
+!	fGibbs = bTD
+!	gGibbs = 0
+!
+!---------------------------------------
+!	Nonideal activity terms
+!	Nonideal part is made from a generalized expression for each excess term:
+!	NIDPointer for each phase component points to the first NIDterm
+!	arrays are: NIDWH  NIDWS  NIDWV
+!	            NIDCa  NIDCb
+!	NIDXa   Xa1  Xa2  Xa3  - these are indexes that refer to the list of cations-on-sites in the mineral header
+!	NIDXb   Xb1  Xb2  Xb3  -    "    "   "
+!	Equation is     (WH - TK*Ws + Pbars*Wv) * ∑(Ca*Xa1*Xa2*Xa3) (sum over NoX terms)
+!	Look at mineral header (Xstype = 0 for an ionic non-ideal model (e.g. Spear et al, etc)
+!                                       Xstype = 1 for a molecular non-ideal model (symmetric formalism of Holland and Powell)
+!	Note that if the index for Xa1 etc = 0 then the value is set = 1 (i.e. a constant)
+!	Note that the DQF term can be incorporated as follows
+!	DQF terms (H,S,V)  NoX=1 Ca=1 Xa1=Xa2=Xa3 = 0 - for example...
+!               WH    WS   Wv    NoX  Ca  NXa1 NXa2 NXa3 
+!              14000.  0   0.     1     1.   0   0    0     DQF for Mrg in Paragonite
+! NOTE: The line of $$$ marks the beginning of the datafile entries (must be only $$$$$)
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+! TC-ds55 notes:
+! 1xxx mineral number indicates HP98 mineral data
+! This file is a subset of all HP98_ds55 minerals - just to compare calculations with HP11 and SPaC
+!
+*****************************************************************************************************************                                                                                                                                                                                                                                                                                                               
+1001            Quartz a-b
+!	HSV values checked June 21 2018
+!       q   1  1    1.00 10    2.00  0          -910.83   0.04150   2.2688
+!         0.1107   -0.000005189       0.0   -1.1283         0.0000065    10.000   750.00     4.00   -0.11250    1    847   0.00495    0.1188
+1	101	0	0
+Quartz	
+-910830	41.5	2.269	
+110.7	-1128.3	0	0	0	-0.005189	0	
+6.500E-06	750000	0	0	847
+847	4.95	0.1188             !Landau coefficients
+Si=1
+*****************************************************************************************************************                                                                                                                                                                                                                               
+1002            Fluid_H2O-CO2                                                                                                                                                                                                                                                                                                                           
+1	104	0	0
+H2O	
+!     H2O   1 11    2.00 10    1.00  0          -241.81   0.18880   0.0000
+!         0.0401    0.000008656     487.5   -0.2512         0.0000000     0.000     0.00     0.00    0.00000    0
+-241810	188.8	0	
+40.1	-251.2	487500	0	0	0.008656	0	
+0.000E+00	0	0	0	0
+0               0               0               !Landau coefficients
+H2O=1
+CO2	
+!     CO2   1 12    1.00 10    2.00  0          -393.51   0.21370   0.0000
+!         0.0878   -0.000002644     706.4   -0.9989         0.0000000     0.000     0.00     0.00    0.00000    0
+-393510	213.7	0	
+87.8	-998.9	706400	0	0	-0.002644	0	
+0.000E+00	0	0	0	0
+0               0               0               !Landau coefficients
+CO2=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+1013               Pyrophyllite                                                                                                                                                                                                                                                                                                                         
+!prl                AL(2)SI(4)H(2)O(12)                        prl            use
+! ST              0.0   -5640640.000       239.4000        12.8100
+! C3        784.50000     -0.0429480      1251000.0      -8495.900           0.00
+! VHP     0.000075000          525.0         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+1	101	0	0
+Pyrophyllite
+-5640640.000       239.4000        12.8100
+784.50     -8495.900    1251000.0    0     0    0.00429        0	  	!Cp
+5.10E-5	 770000.	0	0
+0               0               0               !Landau coefficients
+Si=4 Al=2 H2O=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+1005               Kyanite                                                                                                                                                                                                                                                                                                                         
+!	HSV values checked June 21 2018
+!      ky   1  3    2.00  1    1.00 10    5.00  0         -2593.11   0.08350   4.4140
+!         0.2794   -0.000007124   -2055.6   -2.2894         0.0000404    10.000  1590.00     4.00   -0.23850    0
+1	101	0	0
+Kyanite	
+-2593110	83.5	4.414	
+279.4	-2289.4	-2055600	0	0	-0.007124	0	
+4.040E-05	1590000	0	0	0
+0               0               0               !Landau coefficients
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+1006               Sillimanite                                                                                                                                                                                                                                                                                                                     
+!	HSV values checked June 21 2018
+!    sill   1  3    2.00  1    1.00 10    5.00  0         -2585.68   0.09550   4.9860
+!         0.2802   -0.000006900   -1375.7   -2.3994         0.0000221    10.000  1320.00     4.00   -0.19800    1   2200   0.00400    0.0350
+1	101	0	0
+Sillimanite	
+-2585680	95.5	4.986	
+280.2	-2399.4	-1375700	0	0	-0.0069	0	
+2.210E-05	1320000	0	0	
+2200            4.              0.0350               !Landau coefficients
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+1007               Andalusite                                                                                                                                                                                                                                                                                                                      
+!	HSV values checked June 21 2018
+!     and   1  3    2.00  1    1.00 10    5.00  0         -2588.80   0.09270   5.1530
+!         0.2773   -0.000006588   -1914.1   -2.2656         0.0000411    10.000  1334.00     4.00   -0.20010    0
+1	101	0	0
+Andalusite	
+-2588800	92.7	5.153	
+277.3	-2265.6	-1914100.	0	0	-0.006588	0	
+4.110E-05	1334000	0	0	0
+0               0               0               !Landau coefficients
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+1008               KySilAnd                                                                                                                                                                                                                          
+1	8	0	0
+KSA             KySilAnd                                                                                                                                                                                                                                                                                                      
+0               0               0
+0               0               0               0               0               0               0
+0               0               0               0
+0               0               0               !Landau coefficients
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+1017	Muscovite                       Non-ideal Ms-Pa model (Symm formalism)
+! I'm confused --- I thought ds55 had only SF terms. But the datafile I'm relating to clearly has ASF terms
+! How can this be since TC 33 didn't handle ASF terms to my knowledge?
+4	103	9	0
+C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+0      1       2        3      4      5      6       7       8    9
+       2       2        2      1      1      1       1       1    1
+!	HSV values checked June 21 2018
+-----------------------------------------------
+Celadonite	
+!     cel   1  9    1.00  5    1.00  3    1.00  1    4.00 10   12.00 11    2.00  0         -5842.42   0.29000  13.9570
+!         0.7412   -0.000018748   -2368.8   -6.6169         0.0000596    10.000   700.00     4.00   -0.10500    0
+-5842420.	290	13.957	
+741.2	-6616.9	-2368800	0	0	-0.018748	0	
+5.960E-05	500000	0	0	0	
+0               0               0               !Landau coefficients
+Si=4 Al=1 Mg=1 K=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+1.       0.      2.      0.     0.      1.     0.      0.     1.   0.                  Alpha factors for ideal activity
+-----------------------------------------------
+Fe-Celadonite	
+!    fcel   1  9    1.00  4    1.00  3    1.00  1    4.00 10   12.00 11    2.00  0         -5477.43   0.32900  14.0700
+!         0.7563   -0.000019147   -1586.1   -6.9287         0.0000596    10.000   700.00     4.00   -0.10500    0
+-5477430	329.	14.07	
+756.3	-6928.7	-1586100	0	0	-0.019147	0	
+5.960E-05	490000	0	0	0	
+0               0               0               !Landau coefficients
+Si=4 Al=1 Fe=1 K=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+1.        0.      2.     0.     0.     0.      1.      0.     1.     0.                 Alpha factors for ideal activity
+-----------------------------------------------
+Muscovite
+!      mu   2  9    1.00  3    3.00  1    3.00 10   12.00 11    2.00  0         -5984.18   0.29200  14.0830
+!         0.7564   -0.000019840   -2170.0   -6.9792         0.0000596    10.000   490.00     4.00   -0.07350    0
+-5984180	292.	14.083	
+756.4	-6979.2	-2170000	0	0	-0.01984	0	
+5.960E-05	490000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=3 K=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+4.       0.      1.       1.     1.   0.      0.      0.      1.    0.               Alpha factors for ideal activity
+-----------------------------------------------
+Paragonite	
+!      pa   1  8    1.00  3    3.00  1    3.00 10   12.00 11    2.00  0         -5946.34   0.27600  13.2110
+!         0.8030   -0.000031580     217.0   -8.1510         0.0000774    10.000   550.00     4.00   -0.08250    0
+-5946340.	276.	13.211	
+803	-8151	217000	0	0	-0.03158	0	
+7.740E-05	550000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=3 Na=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+4.       0.      1.      1.      1.   0.       0.    0.      0.    1.               Alpha factors for ideal activity
+-----------------------------------------------
+!Cations on sites to component definitions
+            Cel         FeCel       Ms      Pa
+            2.          2.          2.      2.    SiT2
+            2.          2.          1.      1.    SiT1
+            0.          0.          1.      1.    AlT1
+            0.          0.          1.      1.    AlM2A
+            1.          0.          0.      0.    MgM2A
+            0.          1.          0.      0.    FeM2A
+            1.          1.          1.      1.    AlM2B
+            1.          1.          1.      0.    K
+            0.          0.          0.      1.    Na
+-----------------------------------------------
+5		! number of non-ideal terms
+!WH	 WS        Wv		ID1	ID2
+10120.  -3.4	0.3550        	3	4	!W(mu-pa)
+0.    	0     	0.2     	1	3	!W(mu-cel)
+0.    	0     	0.2    		2	3	!W(mu-fecel)
+52000.    0     0.0     	1	4	!W(pa-cel)
+52000.    0     0.0    		2	4	!W(pa-fecel)
+! 1420.   0   0.4   1   1.   0   0    0                         I(Pa) - DQF term -- ?? not sure where this came from
+! Muscovite: WM02      used in data set HP2 of Pattison & DeBuhr (JMG, 2015)
+! Defined by: Coggon & Holland, 2002, with their prl and margarite members excluded
+! Refernces: White et al., 2007
+-----------------------------------------------
+0		!List of new variables
+******************************************************************************************************************
+1018	Paragonite                       Non-ideal Ms-Pa model (Symm formalism)
+! I'm confused --- I thought ds55 had only SF terms. But the datafile I'm relating to clearly has ASF terms
+! How can this be since TC 33 didn't handle ASF terms to my knowledge?
+4	103	9	0
+C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+0      1       2        3      4      5      6       7       8    9
+       2       2        2      1      1      1       1       1    1
+!	HSV values checked June 21 2018
+-----------------------------------------------
+Celadonite	
+!     cel   1  9    1.00  5    1.00  3    1.00  1    4.00 10   12.00 11    2.00  0         -5842.42   0.29000  13.9570
+!         0.7412   -0.000018748   -2368.8   -6.6169         0.0000596    10.000   700.00     4.00   -0.10500    0
+-5842420.	290	13.957	
+741.2	-6616.9	-2368800	0	0	-0.018748	0	
+5.960E-05	500000	0	0	0	
+0               0               0               !Landau coefficients
+Si=4 Al=1 Mg=1 K=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+1.       0.      2.      0.     0.      1.     0.      0.     1.   0.                  Alpha factors for ideal activity
+-----------------------------------------------
+Fe-Celadonite	
+!    fcel   1  9    1.00  4    1.00  3    1.00  1    4.00 10   12.00 11    2.00  0         -5477.43   0.32900  14.0700
+!         0.7563   -0.000019147   -1586.1   -6.9287         0.0000596    10.000   700.00     4.00   -0.10500    0
+-5477430	329.	14.07	
+756.3	-6928.7	-1586100	0	0	-0.019147	0	
+5.960E-05	490000	0	0	0	
+0               0               0               !Landau coefficients
+Si=4 Al=1 Fe=1 K=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+1.        0.      2.     0.     0.     0.      1.      0.     1.     0.                 Alpha factors for ideal activity
+-----------------------------------------------
+Muscovite
+!      mu   2  9    1.00  3    3.00  1    3.00 10   12.00 11    2.00  0         -5984.18   0.29200  14.0830
+!         0.7564   -0.000019840   -2170.0   -6.9792         0.0000596    10.000   490.00     4.00   -0.07350    0
+-5984180	292.	14.083	
+756.4	-6979.2	-2170000	0	0	-0.01984	0	
+5.960E-05	490000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=3 K=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+4.       0.      1.       1.     1.   0.      0.      0.      1.    0.               Alpha factors for ideal activity
+-----------------------------------------------
+Paragonite	
+!      pa   1  8    1.00  3    3.00  1    3.00 10   12.00 11    2.00  0         -5946.34   0.27600  13.2110
+!         0.8030   -0.000031580     217.0   -8.1510         0.0000774    10.000   550.00     4.00   -0.08250    0
+-5946340.	276.	13.211	
+803	-8151	217000	0	0	-0.03158	0	
+7.740E-05	550000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=3 Na=1 H2O=1
+!C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+4.       0.      1.      1.      1.   0.       0.    0.      0.    1.               Alpha factors for ideal activity
+-----------------------------------------------
+!Cations on sites to component definitions
+            Cel         FeCel       Ms      Pa
+            2.          2.          2.      2.    SiT2
+            2.          2.          1.      1.    SiT1
+            0.          0.          1.      1.    AlT1
+            0.          0.          1.      1.    AlM2A
+            1.          0.          0.      0.    MgM2A
+            0.          1.          0.      0.    FeM2A
+            1.          1.          1.      1.    AlM2B
+            1.          1.          1.      0.    K
+            0.          0.          0.      1.    Na
+-----------------------------------------------
+5		! number of non-ideal terms
+!WH	 WS        Wv		ID1	ID2
+10120.  -3.4	0.3550        	3	4	!W(mu-pa)
+0.    	0     	0.2     	1	3	!W(mu-cel)
+0.    	0     	0.2    		2	3	!W(mu-fecel)
+52000.    0     0.0     	1	4	!W(pa-cel)
+52000.    0     0.0    		2	4	!W(pa-fecel)
+! 1420.   0   0.4   1   1.   0   0    0                         I(Pa) - DQF term -- ?? not sure where this came from
+! Muscovite: WM02      used in data set HP2 of Pattison & DeBuhr (JMG, 2015)
+! Defined by: Coggon & Holland, 2002, with their prl and margarite members excluded
+! Refernces: White et al., 2007
+-----------------------------------------------
+0		!List of new variables
+******************************************************************************************************************
+1030            garnet
+4	103	4	0
+C       XMg      XFe     XMn      XCa
+0        1        2       3        4
+         3        3       3        3
+!	HSV values checked June 21 2018
+-----------------------------------------------
+Pyrope	
+!      py   3  5    3.00  3    2.00  1    3.00 10   12.00  0         -6284.72   0.26630  11.3180
+!         0.6335    0.000000000   -5196.1   -4.3152         0.0000436    10.000  1737.00     4.00   -0.26055    0
+-6284720	266.3	11.318	
+633.5	-4315.2	-5196100	0	0	0	0	
+4.360E-05	1737000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Mg=3
+!C       XMg      XFe     XMn      XCa
+1.      3.        0.       0.      0.         !alpha factors for ideal activities
+-----------------------------------------------
+Almandine	
+!     alm   3  4    3.00  3    2.00  1    3.00 10   12.00  0         -5263.52   0.34000  11.5110
+!         0.6773    0.000000000   -3772.7   -5.0440         0.0000403    10.000  1690.00     4.00   -0.25350    0
+-5263520.	340.	11.511	
+677.3	-5044	-3772700	0	0	0	0	
+4.030E-05	1690000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Fe=3
+!C       XMg      XFe     XMn      XCa
+1.       0.        3.      0.      0.         !alpha factors for ideal activities
+-----------------------------------------------
+Spessartine	
+!    spss   3  6    3.00  3    2.00  1    3.00 10   12.00  0         -5646.40   0.36700  11.7920
+!         0.5846   -0.000001593   -7516.7   -2.7501         0.0000462    10.000  1790.00     4.00   -0.26850    0
+-5646400.	367	11.792	
+584.6	-2750.1	-7516700	0	0	-0.001593	0	
+4.620E-05	1790000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Mn=3
+!C       XMg      XFe     XMn      XCa
+1.       0.   	  0.       3.       0.         !alpha factors for ideal activities
+-----------------------------------------------
+Grossular	
+!      gr   3  7    3.00  3    2.00  1    3.00 10   12.00  0         -6644.15   0.25500  12.5350
+!         0.6260    0.000000000   -5779.2   -4.0029         0.0000393    10.000  1680.00     4.00   -0.25200    0
+-6644150	255.	12.535	
+626.	-4002.9	-5779200	0	0	0	0	
+3.930E-05	1680000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Ca=3
+!C       XMg      XFe     XMn      XCa
+1.         0.       0.     0.       3.         !alpha factors for ideal activities
+-----------------------------------------------
+!Cations on sites to component definitions
+     Prp     Alm     Sps     Grs
+     3        0       0       0     XMg
+     0        3       0       0     XFe
+     0        0       3       0     XMn
+     0        0       0       3     XCa
+-----------------------------------------------
+4               !number of non-ideal terms
+!  WH    WS   Wv    	ID1	ID2 
+   2500.  0     0 	1	2	!W(Prp-Alm)
+  45000.  0     0	1	4	!W(Prp-Grs)	! this is the value in tc-NCKFMASHp.txt
+   4500.  0     0	1	3	!W(Prp-Sps)     Value used in "Pattison Files/APPENDIX S2 - hp1&2.docx
+  10000.  0     0	2	4	!W(Alm-Grs)     Value used in "Pattison Files/APPENDIX S2 - hp1&2.docx
+-----------------------------------------------
+2	!List of New variables
+Pyrope           Pyrope in ideal garnet
+0              1              0              0              0
+1              0              0              0              0
+FeMg(Grt)        Fe/Fe+Mg in ideal garnet
+0              0              1              0              0
+0              1              1              0              0
+******************************************************************************************************************                                                                                                                                                                                                                              
+1040	Staurolite
+3	103	3	0
+C       XMg     XFe    XMn
+0        1       2      3
+         4       4      4
+-----------------------------------------------
+Mg-Staurolite	
+!     mst   4  5    4.00  3   18.00  1    7.50 10   48.00 11    4.00  0        -25101.49   0.91000  44.2600
+!         2.8205   -0.000059366  -13774.0  -24.1260         0.0000120    10.000  1200.00     4.00   -0.18000    0
+-25103090	910	44.26	
+2820.5	-24126	-13774000	0	0	-0.059366	0	
+1.200E-05	1200000	0	0	0	
+0               0               0               !Landau coefficients
+Si=7.5 Al=18 Mg=4 H2O=2
+!C       XMg     XFe    XMn
+1.       4.    0.    0.        Alpha factors
+-----------------------------------------------
+Fe-Staurolite	
+!     fst   4  4    4.00  3   18.00  1    7.50 10   48.00 11    4.00  0        -23753.93   1.01000  44.8800
+!         2.8800   -0.000056595  -10642.0  -25.3730         0.0000120    10.000  1200.00     4.00   -0.18000    0
+-23753880	1010	44.88	
+2880	-25373	-10642000	0	0	-0.056595	0	
+1.200E-05	1200000	0	0	0	
+0               0               0               !Landau coefficients
+Si=7.5 Al=18 Fe=4 H2O=2
+!C       XMg     XFe    XMn
+1.       0.    4.    0.        Alpha factors
+-----------------------------------------------
+Mn-Staurolite	
+!    mnst   4  6    4.00  3   18.00  1    7.50 10   48.00 11    4.00  0        -24203.88   1.02400  45.4600
+!         2.8733   -0.000089064  -12688.0  -24.7490         0.0000120    10.000  1200.00     4.00   -0.18000    0
+-24206000	1024	45.46	
+2873.3	-24749	-12688000	0	0	-0.089064	0	
+1.200E-05	1200000	0	0	0	
+0               0               0               !Landau coefficients
+Si=7.5 Al=18 Mn=4 H2O=2
+!C       XMg     XFe    XMn
+1.       0.    0.    4.        Alpha factors
+-----------------------------------------------
+!Cations on sites to component definitions
+     MgSt    FeSt    MnSt 
+     4        0       0     XMg
+     0        4       0     XFe
+     0        0       4     XMn
+-----------------------------------------------
+1	! number SF terms
+!  WH    WS   Wv    	ID1	ID2 
+-8000.	0	0	1	2	!W(MgSt-FeSt)
+-----------------------------------------------
+0	!List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+1041	Chloritoid
+3	103	3	0
+C       XMg     XFe    XMn
+0        1       2      3
+         1       1      1
+-----------------------------------------------
+Mg-Chloritoid	
+!    mctd   1  5    1.00  3    2.00  1    1.00 10    7.00 11    2.00  0         -3551.42   0.14000   6.8750
+!         0.4644   -0.000012654   -1147.2   -4.3410         0.0000542    10.000  1465.00     4.00   -0.21975    0
+-3559530	132	6.875	
+464.4	-4341	-1147200	0	0	-0.012654	0	
+5.420E-05	1465000	0	0	0	
+0               0               0               !Landau coefficients
+Si=1 Al=2 Mg=1 H2O=1
+!C       XMg     XFe    XMn
+1.       1.    0.    0.        Alpha factors
+-----------------------------------------------
+Fe-Chloritoid	
+!    fctd   1  4    1.00  3    2.00  1    1.00 10    7.00 11    2.00  0         -3215.38   0.15500   6.9800
+!         0.4846   -0.000013808    -198.9   -4.7622         0.0000542    10.000  1465.00     4.00   -0.21975    0
+-3209170	162	6.98	
+484.6	-4762.2	-198900	0	0	-0.013808	0	
+5.420E-05	1465000	0	0	0	
+0               0               0               !Landau coefficients
+Si=1 Al=2 Fe=1 H2O=1
+!C       XMg     XFe    XMn
+1.       0.    1.    0.        Alpha factors
+-----------------------------------------------
+Mn-Chloritoid	
+!   mnctd   1  6    1.00  3    2.00  1    1.00 10    7.00 11    2.00  0         -3329.28   0.16600   7.1750
+!         0.4644   -0.000012654   -1147.2   -4.3410         0.0000542    10.000  1465.00     4.00   -0.21975    0
+-3330930	166	7.175	
+464.4	-4341	-1147200	0	0	-0.012654	0	
+5.420E-05	1465000	0	0	0	
+0               0               0               !Landau coefficients
+Si=1 Al=2 Mn=1 H2O=1
+!C       XMg     XFe    XMn
+1.       0.    0.    1.        Alpha factors
+-----------------------------------------------
+!Cations on sites to component definitions
+     MgCld    FeCld    MnCld 
+     1        0       0     XMg
+     0        1       0     XFe
+     0        0       1     XMn
+-----------------------------------------------
+1	! number SF terms
+!  WH    WS   Wv    	ID1	ID2 
+1000.	0	0	1	2	! W(MgCtd-FeCtd)
+-----------------------------------------------
+0	!List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+1044            Cordierite
+5    103    5     0
+C       XMg     XFe    XMn      H20    V   
+0        1       2      3       4	5
+         2       2      2	1	1
+-----------------------------------------------
+Cordierite	
+!     crd   1  5    2.00  3    4.00  1    5.00 10   18.00  0         -9163.37   0.40750  23.3220
+!         0.8213    0.000043339   -8211.2   -5.0000         0.0000076    10.000   810.00     4.00   -0.12150    1   1800   0.02000    0.2000
+-9163640	407.5	23.322	
+821.3	-5000	-8211200	0	0	0.043339	0	
+7.600E-06	810000	0	0	1800	
+1800	20	0.2          !Landau coefficients
+Si=5 Al=4 Mg=2
+!C       XMg     XFe    XMn      H20    V   
+1.        2       0.    0.        0.   1.        Alpha factors
+-----------------------------------------------
+H-Cordierite	
+!    hcrd   1  5    2.00  3    4.00  1    5.00 10   19.00 11    2.00  0         -9446.98   0.48730  23.3220
+!         0.8697    0.000051995   -7723.7   -5.2512         0.0000076    10.000   810.00     4.00   -0.12150    1   1800   0.02000    0.2000
+-9447250	487.3	23.322	
+869.7	-5251.2	-7723700	0	0	0.051995	0	
+7.600E-06	810000	0	0	1800	
+1800	20	0.2          !Landau coefficients
+Si=5 Al=4 Mg=2 H2O=1
+!C       XMg     XFe    XMn      H20    V   
+1.        2       0.    0.        1.   0.        Alpha factors
+-----------------------------------------------
+Fe-Cordierite	
+!    fcrd   2  4    2.00  3    4.00  1    5.00 10   18.00  0         -8436.07   0.47500  23.7100
+!         0.8515    0.000044724   -6645.0   -5.6234         0.0000076    10.000   810.00     4.00   -0.12150    1   1800   0.02000    0.2000
+-8436510	475	23.71	
+851.5	-5623.4	-6645000	0	0	0.044724	0	
+7.600E-06	810000	0	0	1800	
+1800	20	0.2          !Landau coefficients
+Si=5 Al=4 Fe=2
+!C       XMg     XFe    XMn      H20    V   
+1.        0       2.    0.        0.   1.        Alpha factors
+-----------------------------------------------
+H-Fe-Cordierite	
+-8720120	554.8	23.71	
+899.9	-5874.6	-6157500	0	0	0.05338	0	
+0.0000076	810000	0	0	1800	
+0	0	0            !Landau coefficients
+Si=5 Al=4 Fe=2 H2O=1
+!C       XMg     XFe    XMn      H20    V   
+1.        0       2.    0.        1.   0.        Alpha factors
+-----------------------------------------------
+Mn-cordierite     							! DS62
+!   mncrd   1  6    2.00  3    4.00  1    5.00 10   18.00  0         -8681.18   0.47500  24.0270
+!         0.8477    0.000028490   -7668.2   -5.3114         0.0000076    10.000   810.00     4.00   -0.12150    1   1800   0.02000    0.2000
+-8693590	473	24.027					! H,S,V
+886.5	-5590.4	-8840000	0	0	0	0	! Cp
+0.0000069	1290000	4.1	467.5093974			! EOS
+1800	20	0.2          					!Landau coefficients
+Si=5 Al=4 Mn=2
+!C       XMg     XFe    XMn      H20    V   
+1.        0       0.     2.       0.     1      Alpha factors
+-----------------------------------------------
+!Cations on sites to component definitions
+     Crd     HCrd     FCrd    HFCrd	MnCrd
+     2        2       0       0		0     Mg
+     0        0       2       2		0     Fe
+     0        0       0       0		2     Mn
+     0        1       0       1		0     H20
+     1        0       1       0		1     V
+-----------------------------------------------
+0	! number of SF terms
+-----------------------------------------------
+0	! number of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+1022             Biotite                      MnKFMASH ONLY             (symm formalism)                                                                                                                                                                                                                    
+6    103    11     0
+C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+0    1      2     3       4      5     6       7       8      9     10   11     !Indexes of site atoms
+     2      2     2       1      1     1       1       2      2     2    1  !Site multiplicities for each site
+!	HSV values checked June 21 2018
+----------------------------------
+Phlogopite	
+!     phl   2  9    1.00  5    3.00  3    1.00  1    3.00 10   12.00 11    2.00  0         -6219.16   0.32800  14.9640
+!         0.7703   -0.000036939   -2328.9   -6.5316         0.0000579    10.000   513.00     4.00   -0.07695    0
+-6219160.	328	14.964	
+770.3	-6531.6	-2328900	0	0	-0.036939	0	
+5.790E-05	512000	0	0	0
+0               0               0               !Landau coefficients
+Si=3 Al=1 Mg=3 K=1 H2O=1
+!C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+4.     0.     1.   1.     0.     1.      0.     0.     2.     0.     0.  0.           Alpha factors for ideal activity
+----------------------------------
+Eastonite	
+!    east   2  9    1.00  5    2.00  3    3.00  1    2.00 10   12.00 11    2.00  0         -6338.17   0.31800  14.7380
+!         0.7855   -0.000038031   -2130.3   -6.8937         0.0000579    10.000   513.00     4.00   -0.07695    0
+-6338170.	318.	14.738	
+785.5	-6893.7	-2130300	0	0	-0.038031	0	
+5.790E-05	513000	0	0	0
+0               0               0               !Landau coefficients
+Si=2 Al=3 Mg=2 K=1 H2O=1
+!C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+1.     0.    0.     2.    1.     0.     0.      0.     2.       0.    0.   0.         Alpha factors for ideal activity
+----------------------------------
+Annite	
+!     ann   3  9    1.00  4    3.00  3    1.00  1    3.00 10   12.00 11    2.00  0         -5151.67   0.41800  15.4320
+!         0.8157   -0.000034861      19.8   -7.4667         0.0000579    10.000   513.00     4.00   -0.07695    0
+! Note: DQF included   -3   0   0  (ann1 of Pattison&DeBuhr)
+-5154670.	418.	15.432	
+815.7	-7466.7	19800	0	0	-0.034861	0	
+5.790E-05	513000	0	0	0
+0               0               0               !Landau coefficients
+Si=3 Al=1 Fe=3 K=1 H2O=1
+!C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+4      0.    1.    1.    0.      0.     1.      0.      0.     2.    0.  0.           Alpha factors for ideal activity
+----------------------------------
+Siderophyllite	
+!   This component was "made = eastonite + annite - phlogopite" with no DQF. Only use in KFASH system
+-5637880	372.67	15.063	
+815.8	-7517.1	-564500	0	0	-0.036646	0	
+5.790E-05	514000	0	0	
+0               0               0               !Landau coefficients
+Si=2 Al=3 Fe=2 K=1 H2O=1
+!C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+1.      0.   0.    2.     1.     0.     0.      0.     0.     2.     0.   0.         Alpha factors for ideal activity
+----------------------------------
+Mn-biotite										!DS62
+!    mnbi   2  9    1.00  6    3.00  3    1.00  1    3.00 10   12.00 11    2.00  0         -5462.84   0.43300  15.2640
+!         0.8099   -0.000059213   -1514.4   -6.9987         0.0000579    10.000   513.00     4.00   -0.07695    0
+-5462840.	433	15.264				
+809.9	-6998.7	-1514400	0	0	-0.059213	0
+3.8e-5	530000	7.33	407.169				
+0	0	0	0	0	0	0
+Si=3 Al=1 Mn=3 K=1 H2O=1
+!C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+4      0.    1.    1.    0.      0.     0.      1.     0.     0.     2.  0.           Alpha factors for ideal activity
+----------------------------------
+Ordered-biotite   ------- not used in KFASH or KMASH (only in KFMASH 
+! Note that the DFQ of -10.73 (-10730 J) has been added in to H already from the "make = 2/3phl + 1/3ann 
+-5874060.	358.	15.12	
+785.4	-6843.3	-1546000	0	0	-0.036246	0	
+5.790E-05	512000	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=1 Mg=2	Fe=1 K=1 H2O=1	
+!C    SiT2  SiT1  AlT1   AlM1   MgM1   FeM1    MnM1   MgM2   FeM2   MnM2  K      !Names of site atoms
+ 4.    0.    1.   1.      0.     0.      1.     0.     2.    0.      0.   0.         Alpha factors for ideal activity
+----------------------------------
+!Cations on sites to component definitions  !see hopo98 data file for cation on sites not included
+phl   est   ann   Sid   MnB   OB       : Sites as a function of components  
+2.    2.    2.     2     2     2       SiT2
+1.    0.    1.     0     1     1        SiT1
+1.    2.    1.     2     1     1       AlT1
+0.    1.    0.     1     0     0       AlM1
+1.    0.    0.     0     0     0       MgM1
+0.    0.    1.     0     0     1       FeM1
+0.    0.    0.     0     1     0        MnM1
+2.    2.    0.     0     0     2       MgM2
+0.    0.    2.     2     0     0       FeM2
+0.    0.    0.     0     2     0       MnM2
+1.    1.    1.     1     1     1       K    
+----------------------------------
+10		! number of sf terms
+!WH	WS	WV	ID1	ID2
+9000.	0	0	1	3	!  W(phl,ann)    9  0  0 
+10000.	0	0	1	2	!  W(phl,east)  10  0  0
+0	0	0	1	5	!  W(phl,mnbi)   0  0  0    
+3000.	0	0	1	6	!  W(phl,obi)    3  0  0    
+-1000.	0	0	3	2	!  W(ann,east)  -1  0  0    
+0	0	0	3	5	!  W(ann,mnbi)   0  0  0    
+6000.	0	0	3	6	!  W(ann,obi)    6  0  0
+0	0	0	2	5	!  W(east,mnbi)  0  0  0    
+10000.	0	0	2	6	!  W(east,obi)  10  0  0
+0	0	0	5	6	!  W(mnbi,obi)   0  0  0    
+!===============================================================================
+! Biotite: BI07      used in data set HP2 of Pattison & DeBuhr (JMG, 2015)
+! Defined: White et al. 2007 (use with GT07)
+!    DKT: added mnbi (ignoring mneast); TC camp does not recommend using Mn in '07 models.
+! References: 
+!===============================================================================
+----------------------------------
+2	! List of new variables
+FeMg(Biot)       Fe/Fe+Mg in biotite
+0              0              0              3              2     0	1  
+0              3              2              3              2     0	3
+Al(Biotite)         Al03/2 Total in biotite
+0              1              3              1              3     1	1
+1              0              0              0              0     0	0
+******************************************************************************************************************                                                                                                                                                                                                                              
+1123              Chlorite                          (molecular model) MnFMASH system                 
+!Chlorites from HP98 Table 1a
+!clinochlore (ordered) clin Mg5Al2Si3O10(OH)4
+!amesite (14 Ang) ames Mg4Al4Si2O10(OH)4 
+!daphnite daph Fe5Al2Si3O10(OH)4
+!Mn–chlorite mnchl Mn5Al2Si3O10(OH)4
+!Al-free chlorite afchl Mg6Si4O10(OH)4		Not used
+!Fe–sudoite fsud Fe2Al4Si3O10(OH)4 		Not used
+!sudoite sud Mg2Al4Si3O10(OH)4			Not used
+!	Note that Al free chlorite is not used (AlM4 is always very nearly 1.0)
+!	Note also that the ds55 activity models assume no ordering of Fe and Mg on the M sites
+5	103	11	0
+C   SiT1  SiT2  AlT2   AlM4   AlM1     MgM1    FeM1	MnM1    MgM23    FeM23	MnM23      	!Names of site atoms
+0    1     2     3       4      5       6       7       8       9        10        11       			!Indexes of site atoms
+     2     2     2       1      1       1       1       1       4         4         4       			!Site multiplicities for each site
+!	HSV values checked June 21 2018
+----------------------------------
+Clinochlore                                                                                                                                                                     
+!    clin   2  5    5.00  3    2.00  1    3.00 10   18.00 11    8.00  0         -8912.41   0.43050  21.0900
+!         1.1618    0.000010133   -7657.3   -9.6909         0.0000398    10.000   870.00     4.00   -0.13050    0
+-8912410.	430.5	21.09	
+1161.8	-9690.9	-7657300	0	0	0.010133	0	
+3.980E-05	472000	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Mg=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   AlM1     MgM1    FeM1	MnM1    MgM23    FeM23	MnM23      	!Names of site atoms
+4.    0.    1.    1.    0.      0.      1.       0.      0.      4.       0.      0.         Alpha factors for ideal activity
+! note that I am not using afchl (it turns out that the value is almost always AlM4 = 1) so I'm not including AlM4 in ideal activity
+----------------------------------
+Mg-Amesite                                                                                                                                                                      
+!    ames   2  5    4.00  3    4.00  1    2.00 10   18.00 11    8.00  0         -9034.44   0.41000  20.5200
+!         1.1770    0.000009041   -7458.7  -10.0530         0.0000398    10.000   870.00     4.00   -0.13050    0
+-9034440.	410	20.52	
+1177	-10053	-7458700	0	0	0.009041	0	
+3.980E-05	472000	0	0	
+0               0               0               !Landau coefficients
+Si=2 Al=4 Mg=4 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   AlM1     MgM1    FeM1	MnM1    MgM23    FeM23	MnM23      	!Names of site atoms
+1.    0.    0.    2.      0.     1.      0.       0.       0.      4.      0.     0.         Alpha factors for ideal activity
+----------------------------------
+Daphnite                                                                                                                   
+!    daph   3  4    5.00  3    2.00  1    3.00 10   18.00 11    8.00  0         -7134.85   0.56500  21.3400
+!         1.2374    0.000013594   -3743.0  -11.2500         0.0000398    10.000   870.00     4.00   -0.13050    0
+-7134850.	565.	21.34	
+1237.4	-11250	-3743000	0	0	0.013594	0	
+3.980E-05	472000	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Fe=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   AlM1     MgM1    FeM1	MnM1    MgM23    FeM23	MnM23      	!Names of site atoms
+4.   0.     1.    1.     0.     0.       0.      1.      0.       0.      4.     0.         Alpha factors for ideal activity
+----------------------------------
+Fe-Amesite          			! Made from linear combination of Clinochlore, Daphanite and Mg-Amesite                                                                                                                                                            
+-7631830	497.6	20.72	
+1237.5	-11300.3	-4327300	0	0	0.01181	0	
+3.980E-05	472000	0	0	
+0               0               0               !Landau coefficients
+Si=2 Al=4 Fe=4 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   AlM1     MgM1    FeM1	MnM1    MgM23    FeM23	MnM23      	!Names of site atoms
+1.    0.    0.    2.     0.     1.        0.     0.      0.      0.       4.    0.         Alpha factors for ideal activity
+----------------------------------
+MnChlorite                                                                                                                   
+!   mnchl   2  6    5.00  3    2.00  1    3.00 10   18.00 11    8.00  0         -7666.53   0.59500  22.5900
+!         1.2278   -0.000026990   -6299.8  -10.4694         0.0000398    10.000   870.00     4.00   -0.13050    0
+-7666530.	595.	22.59	
+1227.8	-10469.	-6299800	0	0	-0.026990	0	
+3.980E-05	472000	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=2 Mn=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   AlM1     MgM1    FeM1	MnM1    MgM23    FeM23	MnM23      	!Names of site atoms
+4.    0.     1.    1.     0.     0.       0.      0.      1.       0.      0.     4.         Alpha factors for ideal activity
+----------------------------------
+  Clin  Ames Daph FeAm  MnChl  :Sites as a function of components
+    2.   2.   2.  2.    2.       SiT1
+    1.   0.   1.  0.    1.       SiT2      
+    1.   2.   1.  2.    1.       AlT2     
+    1.   1.   1.  1.    1.       AlM4    
+    0.   1.   0.  1.    0.       AlM1    
+    1.   0.   0.  0.    0.       MgM1    
+    0.   0.   1.  0.    0.       FeM1    
+    0.   0.   0.  0.    1.       MnM1    
+    4.   4.   0.  0.    0.       MgM23    
+    0.   0.   4.  4.    0.       FeM23    
+    0.   0.   0.  0.    4.       MnM23    
+----------------------------------
+4               Number of non-ideal activity model lines
+!WH	WS	WV	ID1	ID2
+ 18000.  0    	0	1	2        	W(cl-am)
+  2500.  0    	0       1	3  		W(cl-da)
+ 13500.  0    	0       2	3  		W(da-am)
+ 18000.  0    	0       3	4  		W(da-FeAm)	This one is uncertain. Use same linear combination in "make" Feamesite
+----------------------------------
+1	!List of new variables
+FeMg(Chlor)       Fe/Fe+Mg in chlorite
+0              0              0               5              4           0 
+0              5              4               5              4           0
+******************************************************************************************************************                                                                                                                                                                                                                              
+1093            Plagioclase
+2	103	4	0
+C       XSi     XAl     XNa     XCa 
+0        1        2     3       4
+         4        4     1       1
+!	HSV values checked June 21 2018
+-----------------------------------------------
+Albite
+!      ab   1  8    1.00  3    1.00  1    3.00 10    8.00  0         -3934.56   0.21010  10.0060
+!         0.4520   -0.000013364   -1275.9   -3.9536         0.0000456    10.000   593.00     4.00   -0.08895    1    950   0.01600    0.1240
+-3934600	210.1	10.006	
+452	-3953.6	-1275900	0	0	-0.013364	0	
+4.560E-05	593000	0	0
+950	16	0.124           !Landau coefs	
+Si=3 Al=1 Na=1
+!C       XSi     XAl     XNa     XCa 
+1.   0.   0.   1.   0.
+-----------------------------------------------
+Anorthite	
+!      an   1  7    1.00  3    2.00  1    2.00 10    8.00  0         -4233.48   0.20000  10.0790
+!         0.3716    0.000012615   -4110.2   -2.0384         0.0000238    10.000   919.00     4.00   -0.13785    1   2300   0.01100    0.0500
+-4233480	200	10.079	
+371.6	-2038.4	-4110200	0	0	0.012615	0	
+2.380E-05	919000	0	0	0
+2300	11	0.05	
+Si=2 Al=2 Ca=1
+!C       XSi     XAl     XNa     XCa 
+1.   0.   0.   0.   1.
+-----------------------------------------------
+     Alb     An
+     3        2      XSi
+     1        2      XAl
+     1        0      XNa
+     0        1      XCa
+----------------------------------
+0	! Number of sf terms
+----------------------------------
+0	! number of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+1092            Microcline
+1	101	0	0
+Microcline	
+!     mic   1  9    1.00  3    1.00  1    3.00 10    8.00  0         -3975.11   0.21600  10.8920
+!         0.4488   -0.000010075   -1007.3   -3.9731         0.0000335    10.000   574.00     4.00   -0.08610    0
+-3975050	216	10.892	
+448.8	-3973.1	-1007300	0	0	-0.010075	0	
+3.350E-05	574000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=1 K=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+1094	Sanidine
+1	101	0	0
+Sanidine	
+!     san   1  9    1.00  3    1.00  1    3.00 10    8.00  0         -3964.96   0.23000  10.9000
+!         0.4488   -0.000010075   -1007.3   -3.9731         0.0000335    10.000   574.00     4.00   -0.08610    0
+-3964900	230	10.9	
+448.8	-3973.1	-1007300	0	0	-0.010075	0	
+3.350E-05	574000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=1 K=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+1096	Alkali_Feldspar                                 (ionic model)
+2	103	4	0
+C       XSi     XAl     XNa     XK 
+0        1        2     3       4
+         4        4     1       1
+-----------------------------------------------
+Sanidine	
+!     san   1  9    1.00  3    1.00  1    3.00 10    8.00  0         -3964.96   0.23000  10.9000
+!         0.4488   -0.000010075   -1007.3   -3.9731         0.0000335    10.000   574.00     4.00   -0.08610    0
+-3964900	230	10.9	
+448.8	-3973.1	-1007300	0	0	-0.010075	0	
+3.350E-05	574000	0	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=1 K=1
+!C       XSi     XAl     XNa     XK 
+1.       0.      0.       0.     1.				! ideal activities
+-----------------------------------------------
+Albite
+!     abh   1  8    1.00  3    1.00  1    3.00 10    8.00  0         -3924.80   0.22340  10.1090
+!         0.4520   -0.000013364   -1275.9   -3.9536         0.0000456    10.000   593.00     4.00   -0.08895    0
+-3934600	210.1	10.006	
+452	-3953.6	-1275900	0	0	-0.013364	0	
+4.560E-05	593000	0	0
+950	16	0.124           !Landau coefs	
+Si=3 Al=1 Na=1
+!C       XSi     XAl     XNa     XK 
+1.       0.       0.      1.     0.
+-----------------------------------------------
+     San     Alb
+     3        3      XSi
+     1        1      XAl
+     0        1      XNa
+     1        0      XK
+-----------------------------------------------
+1	! number SF terms
+!WH	WS	WV	ID1	ID2
+25100.	-0.0108	0.338	1	2		! 25.1 -0.0108  0.338     w(sanabh)  
+-----------------------------------------------
+1	!List of new variables
+Xkfs         XKfs(depent variable)
+0              1              0             
+1              0              0   
+******************************************************************************************************************                                                                                                                                                                                                                              
+1034          Zoisite
+1	101	0	0
+zo	Zoisite
+!      zo   1  7    2.00  3    3.00  1    3.00 10   13.00 11    1.00  0         -6898.61   0.29700  13.5750
+!         0.5957    0.000062297   -5921.3   -3.3947         0.0000670    10.000  1120.00     4.00   -0.16800    0
+-6898570	297	13.575
+595.7	-3394.7	-5921300	0	0	0.062297	0
+6.700E-05	1120000	0	0	
+0               0               0               !Landau coefficients
+Si=3 Al=3 Ca=2 H2O=0.5
+******************************************************************************************************************
+1036	Lawsonite
+1	101	0	0
+law	Lawsonite
+-4869190	230	10.132
+687.8	-7179.2	375900	0	0	0.001566	0
+5.820E-05	1014000	0	0	
+0               0               0               !Landau coefficients
+Si=2 Al=2 Ca=1 H2O=2
+******************************************************************************************************************
+1095            Clinozoisite
+1	101	0	0
+Czoi		
+!      cz   1  7    2.00  3    3.00  1    3.00 10   13.00 11    1.00  0         -6898.15   0.30100  13.6300
+!         0.5670    0.000018063   -7034.0   -2.6030         0.0000460    10.000  1120.00     4.00   -0.16800    0
+-6898110	301	13.63	
+567	-2603	-7034000	0	0	0.018063	0	
+4.600E-05	1120000	0	0	
+0	0	0	
+Si=3 Al=3 Ca=2 H2O=0.5
+*****************************************************************************************************************                                                   											
+1111            Corundum
+1               101               0               0         
+Corundum
+-1675190	50.9	2.558	
+139.5	-589.2	-2460600	0	0	0.00589	0	
+4.190E-05	2520000	0	0	0	
+0	0               0               !Landau -
+Al=2
+*****************************************************************************************************************                                                                                                                                                                                                                               
+1080              Rutile-pure                                                                                                                                                                                                                                                                                                                          
+1	101	0	0
+Rt
+!rutile −888.92 −944.19 0.83 50.60 1.882 0.0904 0.2900 0 −0.6238 4.43 2225
+-944190.    50.60    1.882                                                                                                                                                                                                                                      
+90.4  -623.8   0    0    0  0.0029      0
+4.43e-5  2225000.    0    0
+0               0               0               !Landau coefficients
+Ti=1
+*****************************************************************************************************************                                                                                                                                                                                                                               
+1081              Ilmenite                 (Ilm-Hmss)-ideal_1-site_mixing                                                                                                                                                                                                                                                                                                              
+2	103	2	0
+C    Fe    Mn    			! These are only on the non-Ti site
+0     1	    2    
+      1     1    
+----------------------------------
+Ilm             ILMENITE                                                                                        ! Modified S and H to match GRAIL experiments (kept rutile the same)
+!ilmenite −1154.63 −1231.25 0.90 108.90 3.169 0.1389 0.5081 −1288.8 −0.4637 4.95 1770 1900 11.00 0.0200
+-1231300.000       108.9000         3.1690
+138.900   -463.7    -1288800.0   0   0   0.0050810    0
+0.0000495   1770000    0    0
+0               0               0               !Landau coefficients
+Fe=1 Ti=1
+!C    Fe    Mn   
+1     1	    0    
+----------------------------------
+Pht             Pyrophanite                                                                                                                                                                                                                                                                                                        
+!pyrophanite −1279.93 −1359.14 2.33 104.90 3.288 0.1419 0.3373 −1940.7 −0.4076 4.95 1770
+-1359140.       104.9        3.288  													! H set to H&P 1998 value                                                                                                                                          
+149.999      -407.6     -1940700   0   0   0.003373     0
+0.0000495    1770000.    0    0
+0               0               0               !Landau coefficients
+Mn=1 Ti=1
+!C    Fe    Mn   
+1     0	    1   
+----------------------------------
+!Cations on sites to component definitions
+    Ilm      Pht     
+    1        0       Fe
+    0        1       Mn
+----------------------------------
+0	! number of sites with Margules terms
+----------------------------------
+0	! Number of new variables
+*****************************************************************************************************************                                                                                                                                                                                                                               
+1084        Titanite
+1               101                0              0
+Ttn
+-2595550.	131.2	5.565				
+233.7   -1207.6   -2306500.   0    0   0.004043     0
+0.0000420        1100000.    0    0
+0               0               0               !Landau coefficients
+Si=1 Ti=1 Ca=1
+*****************************************************************************************************************                                                   											
+1057            Amphibole_Ca-Na
+! This model conforms to HP98 with modifications by Diener et al (2007: JMG v 25, 631-656
+!	as coded in the Theriak-Domino file tcds55.p07.txt
+9	203	15	0				! The PhaseType is set to 203 (HP11 activity models) because this model uses ASF parameters
+C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4   FeM4   CaM4     NaM4    NaA	VA
+0       1        2        3      4     5      6      7      8      9     10      11    12	13    14       15
+        4        4        4      2     2      2      2      3      3      2      2      2        2     1	1     
+-----------------------------------------------
+Tremolite	
+!-12309720	550	27.27	
+!HP98 tremolite −11581.42 −12309.72 2.91 550.00 27.270 1.2602 0.3830 −11455.0 −8.2376 5.34 762
+-12310380.000       550.0000        27.2700
+1260.2	-8237.6	-11455000	0	0	0.00383	     0	
+0.0000261	762000	4.1	533.7266229		! Note EOS terms are from HP11 		
+! What is VH2 in tcds55.p07.txt?
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=5 Ca=2 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.        0.        1.       0.     0.    0.    2.   0.     3.     0.     0.     0.      2.     0.      0.       1   Alpha factors
+1	0	0		!ASF parameters
+-----------------------------------------------
+Tschermakite	
+!-12540570	545	26.8	
+!HP98 tshermakite −11807.73 −12540.57 2.91 545.00 26.800 1.2448 2.4348 −11965.0 −8.1121 5.34 760
+! ST              0.0  -12531200.000       545.0000        26.8000
+-12531200.000       545.0000        26.8000			! DQF has been added
+1244.8	-8112.1	-11965000	0	0	0.024348	0	
+0.0000266	760000	4.1	547.1193416			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=6 Al=4 Mg=3 Ca=2 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+2.       0.        0.5     0.5     2.    0.    0.   0.     3.     0.     0.     0.      2.     0.      0.       1   Alpha factors
+1.5	0	0		!ASF parameters
+-----------------------------------------------
+Pargasite	
+!HP98 pargasite −11986.81 −12719.60 2.67 601.00 27.190 1.2802 2.2997 −12359.5 −8.0658 5.34 912
+!-12719590	601	27.19	
+! ST              0.0  -12705650.000       601.0000        27.1900
+ -12705650.000       601.0000        27.1900			! DQF has been added
+1280.2	-8065.8	-12359500	0	0	0.022997	0	
+0.000028	912000	4.09	493.3427574				
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=6 Al=3 Mg=4 Ca=2 Na=1 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+8.       0.        0.5     0.5     1.    0.    1.   0.     3.     0.     0.     0.      2.     0.      1.       0   Alpha factors
+1.7	0	0		!ASF parameters
+-----------------------------------------------
+Glaucophane	
+!-11969260	535	26.05	
+!HP98 glaucophane −11233.99 −11969.26 4.07 535.00 26.050 1.7175 −12.1070 7075.0 −19.2720 5.30 883
+! ST              0.0  -11966470.000       535.0000        26.0500
+ -11966470.000       535.0000        26.0500		DQF added
+1717.5	-19272	7075000	0	0	-0.12107	0	
+0.0000149	883000	4.09	549.186439			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Al=2 Mg=3 Na=2 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.       0.        1.       0.     2.    0.    0.   0.     3.     0.     0.     0.      0.     2.      0.       1.   Alpha factors
+0.8	0	0		!ASF parameters
+-----------------------------------------------
+Cummingtonite	                
+!HP98 cummingtonite −11331.61 −12056.79 3.44 540.00 26.330 1.2773 2.5825 −9704.6 −9.0747 5.00 700
+! ST              0.0  -12063880.000       540.0000        26.3300
+-12063880.000       540.0000        26.3300			! Adjusted for DQF
+1277.3  -9074.7   -9704600.    0    0    0.025825      0 
+0.0000252	700000	4.11	543.7085432			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=7 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.       0.        1.       0.     0.    0.    2.   0.     3.     0.     2.     0.      0.     0.      0.       1.   Alpha factors
+1	0	0		!ASF parameters
+-----------------------------------------------
+Grunerite                
+!HP98 grunerite −8956.27 −9613.64 3.44 730.00 27.840 1.3831 3.0669 −4224.7 −11.2576 5.00 648
+!−9613640.    730.00     27.840
+! ST              0.0   -9618200.000       730.0000        27.8400
+-9618200.000       730.0000        27.8400			!DQF added
+1383.1   -11257.6   -4224700.     0     0       0.030669     0 
+0.0000274	648000	4.12	436.4950352			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Fe=7 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.       0.        1.       0.     0.    0.    0.   2.     0.     3.     0.     2.      0.     0.      0.       1.   Alpha factors
+1	0	0		!ASF parameters
+-----------------------------------------------
+Cam1                
+!a                  FE(4)MG(3)SI(8)H(2)O(24)                     a            use
+! ST              0.0  -10675848.571       648.5714        27.1929
+! C3       1337.75714      0.0285930     -6573228.6     -10322.071           0.00
+! VHP     0.000050000          668.6         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+-10675848.571       648.5714        27.1929
+1337.75714      -10322.071     -6573228.6    0    0    0.0285930    0
+2.64571E-05	670285.7143	4.115714286	482.4436815			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=3 Fe=4 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.       0.        1.       0.     0.    0.    0.   2.     3.     0.     0.     2.      0.     0.      0.       1.   Alpha factors
+1	0	0		!ASF parameters
+-----------------------------------------------
+Cam2
+! ---- Made: 2/7 cumm  5/7 grun  ;   DQF    -17.1  0  0 ------------------------
+!b                  FE(5)MG(2)SI(8)H(2)O(24)                     b            use
+! ST              0.0  -10328665.714       675.7143        27.4086
+! C3       1352.87143      0.0292850     -5790385.7     -10633.914           0.00
+! VHP     0.000050000          661.5         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+-10328665.714       675.7143        27.4086
+1352.87143     -10633.914     -5790385.7    0    0    0.0292850     0
+2.67714E-05	662857.1429	4.117142857	467.1274661			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=2 Fe=5 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.       0.        1.       0.     0.    0.    2.   0.     0.     3.     0.     2.      0.     0.      0.       1.   Alpha factors
+1	0	0		!ASF parameters
+-----------------------------------------------
+MgRiebeckite	                "make" mineral: Hzero is not adjusted for DQF
+! ST              0.0  -11079070.000       609.2000        26.8880
+! C3       1729.50000     -0.1078400      8182600.0     -19413.400           0.00
+! VHP     0.000052801          833.0         0.0000           0.00        0.00000
+!-11114508	598	26.884				!"make" mineral: Hzero is not adjusted for DQF
+-11079070.000       609.2000        26.8880
+1729.5	-19413.4	8182600. 	0	0	-0.1078400	0	
+0.0000083	1015000	3.94	625.6257158			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Fe3=2 Mg=3 Na=2 H2O=1
+!C       SiT1    SiT2     AlT2   AlM2  Fe3M2 MgM2  FeM2  MgM13  FeM13   MgM4    FeM4    CaM4   NaM4    NaA	VA
+1.       0.        1.       0.     0.    2.    0.   0.     3.     0.     0.     0.      0.     2.      0.       1.   Alpha factors
+0.8	0	0		!ASF parameters
+-----------------------------------------------
+!   1        2      3      4     5    6      7     8    9
+   Trem     Tsch   Parg    Gl   Cum  Grun   Cam1  Cam2 MgRb 
+     4       4      4      4     4     4     4     4     4       SiT1
+     4       2      2      4     4     4     4     4     4       SiT2
+     0       2      2      0     0     0     0     0     0       AlT2
+     0       2      1      2     0     0     0     0     0       AlM2
+     0       0      0      0     0     0     0     0     2       Fe3M2
+     2       0      1      0     2     0     0     2     0       MgM2
+     0       0      0      0     0     2     2     0     0       FeM2
+     3       3      3      3     3     0     3     0     3       MgM13
+     0       0      0      0     0     3     0     3     0       FeM13
+     0       0      0      0     2     0     0     0     0       MgM4
+     0       0      0      0     0     2     2     2     0       FeM4
+     2       2      2      0     0     0     0     0     0       CaM4
+     0       0      0      2     0     0     0     0     2       NaM4
+     0       0      1      0     0     0     0     0     0       NaA
+     1       1      0      1     1     1     1     1     1       VA
+-----------------------------------------------
+36	! number of non-ideal SF terms
+!Wh    WS    WV    ID1    ID2
+20000   0   0	1	2	!tr - ts2
+25000   0   0	1	3	!tr - parg2
+65000   0   0	1	4	!tr - gl2
+45000   0   0	1	5	!tr - cumm1
+75000   0   0	1	6	!tr - grun1
+57000   0   0	1	7	!tr - a   a=Cam1
+63000   0   0	1	8	!tr - b   b=Cam2
+65000   0   0	1	9	!tr - mrb
+-40000   0   0	2	3	!ts2 - parg2
+25000   0   0	1	4	!ts2 - gl2
+70000   0   0	2	5	!ts2 - cumm1
+80000   0   0	2	6	!ts2 - grun1
+70000   0   0	2	7	!ts2 - a
+72500   0   0	2	8	!ts2 - b
+25000   0   0	2	9	!ts2 - mrb
+50000   0   0	3	4	!parg2 - gl2
+90000   0   0	3	5	!parg2 - cumm1
+106700   0   0	3	6	!parg2 - grun1
+94800   0   0	3	7	!parg2 - a
+94800   0   0	3	8	!parg2 - b
+50000   0   0	3	9	!parg2 - mrb
+100000   0   0	4	5	!gl2 - cumm1
+113500   0   0	4	6	!gl2 - grun1
+100000   0   0	4	7	!gl2 - a
+111200   0   0	4	8	!gl2 - b
+0   0   0	4	9	!gl2 - mrb
+33000   0   0	5	6	!cumm1 - grun1
+18000   0   0	5	7	!cumm1 - a
+23000   0   0	5	8	!cumm1 - b
+100000   0   0	5	9	!cumm1 - mrb
+12000   0   0	6	7	!grun1 - a
+8000   0   0	6	8	!grun1 - b
+113500   0   0	6	9	!grun1 - mrb
+20000   0   0	7	8	!a - b
+100000   0   0	7	9	!a - mrb
+111200   0   0	8	9	!b - mrb
+-----------------------------------------------
+1	!List of New vari ables
+FeMg(Amph)        Fe/Fe+Mg in Ca-Na amphibole
+!   Trem Tsch Parg  Gl  Cum  Grun Cam1 Cam2 MgRb 
+0    0    0    0    0    0    7    4    5    0     
+0    5    3    4    3    7    7    7    7    3     
+******************************************************************************************************************                                                                                                                                                                                                                              
+1052        Clinopyroxnene			!This is model CPX07 from tcds55_p07.txt
+!	It is the model of Green et al., 2007
+7     103      13     0
+c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+0      1    2      3     4      5     6     7       8      9       10    11    12    13 
+       2    .5    .5    .5    .5    .5      .5      .5      .5    .5    .5    .5    .5
+----------------------------------
+!jd                 NA(1)AL(1)SI(2)O(6)                         jd            use
+! ST              0.0   -3027850.000       133.5000         6.0400
+! C3        301.10000      0.0101430     -2239300.0      -2055.100           0.00
+! VHP     0.000046600         1284.0         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+Jadeite
+-3027850	133.5	6.04
+301.1	-2055.1	-2239300	0	0	0.010143	0
+4.660E-05	1284000	0	0	0	0	0
+0               0               0               !Landau coefficients
+Si=2 Al=1 Na=1
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+1.      0.   .5     0     0.    0.    .5    0.      0       0      0     .5     0    .5         !alpha factors for ideal activities
+----------------------------------
+!di                 CA(1)MG(1)SI(2)O(6)                         di            use
+! ST              0.0   -3202760.000       142.7000         6.6190
+! C3        314.50000      0.0000410     -2745900.0      -2020.100           0.00
+! VHP     0.000057000         1223.0         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+Diopside
+-3202760	142.7	6.619
+314.5	-2020.1	-2745900	0	0	0.000041	0
+5.700E-05	1223000	  0	0	0	0	0
+0               0               0               !Landau coefficients
+Si=2 Mg=1 Ca=1
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+1.    0.     0.     0.    0.5    0.     0.    0.     0.5      0.     0.5     0.    0.5    0.   !alpha factors for ideal activities
+----------------------------------
+!hed                CA(1)FE(1)SI(2)O(6)                        hed            use
+! ST              0.0   -2844160.000       174.2000         6.7950
+! C3        340.20000      0.0008120     -1047800.0      -2646.700           0.00
+! VHP     0.000057000         1200.0         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+Hedenbergite
+-2844160	174.2	6.795
+340.2	-2646.7	-1047800	0	0	0.000812	0
+5.700E-05	1200000	0	0	0	0	0
+0               0               0               !Landau coefficients
+Si=2 Fe=1 Ca=1
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+1.    0.     0.     0.    0.    0.5     0.    0.     0.      0.5     0.5     0.    0.5    0.   !alpha factors for ideal activities
+----------------------------------
+!acm                NA(1)F3(1)SI(2)O(6)                        acm            use
+! ST              0.0   -2586650.000       170.6000         6.4590
+! C3        307.10000      0.0167580     -1685500.0      -2125.800           0.00
+! VHP     0.000046600         1060.0         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+Acmite
+-2586650.	170.6	6.459
+307.1	-2125.8	-1685500	0	0	0.016758	0
+4.660E-05	1060000	0	0	0	0	0
+0               0               0               !Landau coefficients
+Si=2 Fe3=1 Na=1
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+1.    0.     0.     0.5    0.    0.     0.    0.5     0.      0.     0.     0.5    0.    0.5   !alpha factors for ideal activities
+----------------------------------
+! ---- Made: 1/2 jd  1/2 di  ;   DQF  -2.9  0  0 -------------------------------
+!om                 NA(0.5)CA(0.5)MG(0.5)AL(0.5)SI(2)O(6)       om            use
+! ST              0.0   -3118205.000       138.1000         6.3295
+! C3        307.80000      0.0050920     -2492600.0      -2037.600           0.00
+! VHP     0.000052038         1251.4         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+OmCPx
+-3118205.000       138.1000         6.3295
+307.80000   -2037.600    -2492600.0    0    0    0.0050920    0
+0.000052038         1251400.         0.0000           0.00
+0               0               0               !Landau coefficients
+Si=2  Al=0.5  Mg=0.5  Ca=0.5   Na=0.5 
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+1.    0.     0.5     0.    0.    0.     0.    0.     0.5      0.     0.5     0.    0.    0.5   !alpha factors for ideal activities
+-----------------------------------------------
+! ---- Made: 1/2 di  1/2 hed  ;   DQF  -1.5  0  0 ------------------------------
+!cfm                CA(1)FE(0.5)MG(0.5)SI(2)O(6)               cfm            use
+! ST              0.0   -3024960.000       158.4500         6.7070
+! C3        327.35000      0.0004265     -1896850.0      -2333.400           0.00
+! VHP     0.000057000         1211.2         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+CfmCPx
+-3024960.000       158.4500         6.7070
+327.35000      -2333.400    -1896850.0   0   0   0.0004265  0
+0.000057000         1211200.         0.0000           0.00
+0               0               0               !Landau coefficients
+Si=2.   Mg=0.5  Fe=0.5  Ca=1.0
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c NaM2c CaM2n Nam2n
+1.    0.     0.     0.    0.5    0.     0.    0.     0.      0.5     0.5     0.    0.5    0.   !alpha factors for ideal activities
+-----------------------------------------------
+! ---- Made: 1/2 jd  1/2 acm  ;   DQF  -1.0  0  0 ------------------------------
+!jac                NA(1)F3(0.5)AL(0.5)SI(2)O(6)               jac            use
+! ST              0.0   -2808250.000       152.0500         6.2495
+! C3        304.10000      0.0134505     -1962400.0      -2090.450           0.00
+! VHP     0.000046600         1157.6         0.0000           0.00        0.00000
+! VH2         10.0000         4.0000   -0.000150000
+JacCPx
+-2808250.000       152.0500         6.2495
+304.10000      -2090.450    -1962400.0    0   0   0.0134505        0
+0.000046600         1157600.         0.0000           0.00
+0               0               0               !Landau coefficients
+Si=2   Al=0.5   Fe3=0.5   Na=1.0
+!c     SiT  AlM1a Fe3M1a MgM1a FeM1a AlM1m Fe3M1m  MgM1m   FeM1m  CaM2c    NaM2c CaM2n Nam2n
+1.    0.     0.     0.5    0.    0.     0.5    0.     0.      0.     0.     0.5    0.    0.5   !alpha factors for ideal activities
+-----------------------------------------------
+     Jd      Di      Hd      Acm    OMCpx   CfmCPx   JacCpx   
+     2       2       2       2      2       2        2    SiT
+    .5       0       0       0     .5       0        0    AlM1a
+     0       0       0      .5      0       0       .5    Fe3M1a
+     0      .5       0       0      0      .5        0    MgM1a
+     0       0      .5       0      0       0        0    FeM1a
+    .5       0       0       0      0       0       .5    AlM1m
+     0       0       0      .5      0       0        0    Fe3M1m
+     0      .5       0       0     .5       0        0    MgM1m
+     0       0      .5       0      0      .5        0    FeM1m
+     0      .5      .5       0     .5      .5        0    CaM2c
+    .5       0       0      .5      0       0       .5    NaM2c
+     0      .5      .5       0      0      .5        0    CaM2n
+    .5       0       0      .5     .5       0       .5    NaM2n
+-----------------------------------------------
+21  	! number of SF terms
+!Wh    WS    WV    ID1    ID2
+26000   0   0	    1     2	jd - di
+24000   0   0	    1	  3	jd - hed
+ 5000   0   0	    1	  4	jd - acm
+15500   0   0	    1	  5	jd - om
+25200   0   0	    1	  6	jd - cfm
+ 3000   0   0	    1	  7	jd - jac
+ 4000   0   0	    2	  3	di - hed
+15000   0   0	    2	  4	di - acm
+15750   0   0	    2	  5	di - om
+ 2000   0   0	    2	  6	di - cfm
+21050   0   0	    2	  7	di - jac
+14000   0   0	    3	  4	hed - acm
+17200   0   0	    3	  5	hed - om
+ 2000   0   0	    3	  6	hed - cfm
+20100   0   0	    3	  7 	hed - jac
+12800   0   0	    4	  5	acm - om
+15500   0   0	    4	  6	acm - cfm
+ 3000   0   0	    4	  7	acm - jac
+18450   0   0	    5	  6	om - cfm
+19300   0   0	    5	  7	om - jac
+21050   0   0	    6	  7	cfm - jac
+-----------------------------------------------
+0		! number of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              

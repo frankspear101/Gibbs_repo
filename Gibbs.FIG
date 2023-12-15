@@ -1,0 +1,56 @@
+Gibbs_2_configuration file                                                    
+*****************************                                                   
+15         Number of thermofiles in list                                         
+SPaC18_Thermo.dat                                                       
+SPaC18+TE_Thermo.dat                                                       
+SPaC18+TE_Thermo_DK5.dat
+SPaC18+TE_Thermo_DK5_U.dat
+SPaC18+TE_Thermo_DK4.dat
+SPaC18+TE_Thermo_DK8b.dat
+HP98_ds55.dat                                                       
+HP11_ds62_DQF_3_FSS.dat         
+HP11_ds62_DQF_4.dat         
+HP11_ds62_DQF_3_FeTi.dat
+HP11_DS62_DQF_3_camph_cpx.dat                                                       
+HP11_ds62_DQF_TE_3_dk.dat         
+HP11_DS62_DQF_TE_3_dk_Ivr.dat
+HP11_DS62_DQF_TE_dk_4.dat
+SPaC18_Thermo_GB.dat                                                       
+******************************                                                  
+14		Number of bulk rock composition files
+BR_Sifnos.txt
+BR_Syros.txt
+BR_Ios.txt
+BR_Coticule.txt
+BR_BulkRockAnalyses.txt
+BR_CVS_BulkRockAnalyses.txt
+BR_EBC_Project_BulkRock.txt
+BR_Kelsey.txt
+BR_TE_BulkRockAnalyses_1.txt
+BR_TE_BulkRockAnalyses_2.txt
+BR_TE_BulkRockAnalyses_3.txt
+BR_TE_BulkRockAnalyses_DK.txt
+BR_TE_BulkRockAnalyses_Ben_P.txt
+BR_Adrian.txt
+******************************                                                  
+   1  1.000000000000000E-004  0.400000000000000          Gibbs or Newton switch                       
+********************************                                                
+   4        0        0         Default plot number,itrip,iA                     
+********************************                                                
+MAD diagram default settings
+400,700,2
+4000,24000,100
+
+
+These aren't read --- just here for copy/paste
+700,400,-2
+20000,4000,-100
+
+
+400,900,2
+2000,4000,100
+
+
+
+450,800,2		!TcStart, TcEnd, Tincrement
+2000,12000,100		!PbStart, PbEnd, Pincrement

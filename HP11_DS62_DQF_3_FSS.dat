@@ -1,0 +1,2877 @@
+! 1          3         newtonOK(Integral is OK), HP11 datakey
+12                                                                                                                                                                                                                                                              
+Si	Al	Ti	Fe3	Mg	Fe	Mn	Ca	Na	K	H2O	CO2
+60.09           101.96          79.88           159.69          40.32           71.85           70.94            56.08           61.98           94.2            18.016          44.01                                                            
+1               2               1                 2             1               1               1               1               2               2               1               1   
+! NOTE: the number of "cations" in H2O must be 1 (not 2). Otherwise the moles of H2O isn't calculated correctly
+0.467390581	0.529256571	0.599236355	0.699417622	0.602802579	0.777244259	0.774429095	0.714657632	0.741819942	0.830106157	0.111012433	0.272915247	1	0.436437932	0.651961424	0.68420741	0.787444256	0.740322345	0.852683175	0.853768886	0.878204006
+-------------------------------------------
+! Predefined components for plotting. These are for making triangular etc and other plots of phase compositions
+14	Number of predefined components
+!	Const	Si	Al	Ti	Fe3	Mg	Fe	Mn	Ca	Na	K	H2O	CO2	                                                                                                                                                                           
+Si	 0	1	0	0	0	0	0	0	0	0	0	0	0
+Al	 0	0	1	0	0	0	0	0	0	0	0	0	0
+Ti	 0	0	0	1	0	0	0	0	0	0	0	0	0
+Fe3	 0	0	0	0	1	0	0	0	0	0	0	0	0
+Mg	 0	0	0	0	0	1	0	0	0	0	0	0	0
+Fe	0	0	0	0	0	0	1	0	0	0	0	0	0
+Mn	0	0	0	0	0	0	0	1	0	0	0	0	0
+Ca	0	0	0	0	0	0	0	0	1	0	0	0	0
+Na	0	0	0	0	0	0	0	0	0	1	0	0	0
+K	0	0	0	0	0	0	0	0	0	0	1	0	0
+H2O	0	0	0	0	0	0	0	0	0	0	0	1	0
+CO2	0	0	0	0	0	0	0	0	0	0	0	0	1
+Al'(Ms)	0	0	.5	0	0	0	0	0	0	0	-1.5	0	0
+Al'(Kfs)	0	0	.5	0	0	0	0	0	0	0	-0.5	0	0
+---------------------------------------
+2               ! Number of "fixed" minerals to read when data file loads
+!  Mineral         # entries       entry 1         entry 2
+!  This is really bad coding.... the subroutine SetFixedMineral assumes that Ky = 3, Sil = 4, And = 5
+!  This only happens because of the ordering right here. I need to make this more general
+!  Note that the quartz-coesite fixed mineral is only there so Al2SiO5 will be 3,4,5
+2105               2               2001            2103                             ! quartz-coesite
+2008               3               2005            2006              2007          ! Al2SiO5 polymorphs
+---------------------------------------
+!Typical data file entry:
+!Mineral #       Mineral name                                                                                                                                                                                                                                                                                                                                                                                                    
+!4	3	8	2			! These are key codes for mineral type
+! 	Key codes (4 entries)
+!		#1 Phase components
+!		#2 Input phase data type (replaces specialK)
+!			1 = 1 component SPaC
+!			2 = alpha-beta quartz (SPaC)
+!			3 = multicomponent SPaC
+!			5 = Kspar (order-disorder)
+!			4 = H2O SPaC (Haar)
+!			8 = fixed Al2SiO5 minerals (KAS) - should work for all 3 dataset types
+!			10 = Graphite saturated fluid (Connolly_and_Cesare, 1993 JMG)
+!			101 = 1 component HP98
+!			103 = multicomponent HP98 (includes SF input)
+!			104 = Fluid HP98 (CorK)
+!			105 = Melt HP98
+!			108 = fixed Al2SiO5 minerals (KAS) -
+!			201 = 1 component HP11
+!			203 = multicomponent HP11 (includes SF input)
+!			204 = Fluid HP11 (Pitzer eq)
+!			205 = Melt HP11
+!			206 = Spinel (phase # 2082)
+!			208 = fixed Al2SiO5 minerals (KAS) -
+!		#3 of atoms (for multicomponent mineral only. All others are 0)
+!		#4 reciprocal terms (for SPaC multicomponent phases. All other types will be 0) 
+!  C    Si   Al4   AlM1A  MgM1A  FeM1A    AlM1B    KA    NaA	!Names of site atoms	(only for multicomponent minerals k = 3, 11, 21
+!  0    1     2     3       4      5	6      7      8        !Indexes of site atoms
+!        4     4     1       1      1       1      1      1  !Site multiplicities for each site
+! ----------------------------------
+!Comp1 Abb       Comp1 Name                                                                                                                                                                                                                                                                                                                                                                                      
+!H(j/m)          S(j/mK)         V(j/bar)                                                                                                                                        
+!Cp-a          Cp-b          Cp-c          Cp-d          Cp-e    Cp-f            Cp-g           Cp=a + b/T^1/2 + c/T^2 + d/T^3 + e/T + f*T + g*T^2
+!v1             v2             v3             v4    where V(P2,T2) = V(Pr,Tr)*(1 + v1*(T2-Tr) + v2*(T2-Tr)^2 + v3*(P2-Pr) + v4*(P2-Pr)^2)                                                                                                        
+! HP model terms (HPModelswitch + 6 more terms)
+!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+!Composition
+!Ideal activity
+! ASF size parameter
+! ---------------- (dashes to separate components)
+!Comp2 Abb       Comp2 Name                                                                                                                                                                                                                                                                                                                                                                                      
+!H(j/m)          S(j/mK)         V(j/bar)                                                                                                                                        
+!Cp-a          Cp-b          Cp-c          Cp-d          Cp-e    Cp-f            Cp-g         where Cp=a + b/T^1/2 + c/T^2 + d/T^3 + e/T + f*T + g*T^2
+!v1             v2             v3             v4    where V(P2,T2) = V(Pr,Tr)*(1 + v1*(T2-Tr) + v2*(T2-Tr)^2 + v3*(P2-Pr) + v4*(P2-Pr)^2)                                                                                                        
+! HP model terms (HPModelswitch + 6 more terms)
+!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+!Composition
+!Ideal activity
+! ASF size parameter
+!------------------------------
+!	The HP heat capacity expression is
+!	Cp = a + bT + cT-2 + dT-1/2
+!	To use this in Gibbs you need to set the HP terms a,b,c and d to
+!	HP a = Gibbs a
+!	HP b = Gibbs f		
+!	HP c = Gibbs c		
+!	HP d = Gibbs b
+!	Or, Gibbs to HP goes (HP is in kJ, Gibbs is in J. Also, HP b term needs to be divided by 10^5 so...)
+!	a = HP a*1000 in HP
+!	b = HP d*1000 in HP
+!	c = HP c*1000 in HP
+!	d = 0
+!	e = 0
+!	f = HP b/100
+!	g = 0
+!---------------------------------------
+!   Gibbs v1 = HP alpha0/10^5 & b1 (perplex); 
+!   Gibbs v2 = HP kappa0*1000 & b6 (Perplex); 
+!   Gibbs v3 = HP kappa0' (THERMOCALC) & b8 (Perplex); 
+!   Gibbs v4 = Einstein Temperature [K] or theta (THERMOCALC) & b5 (Perplex). You must calculate this yourself (see HP11 for how to do this, pg. 346)
+!   the value for kappa0'' (THERMOCALC) (b7 in perplex) is not specified in GIBBs.
+!--------------------------------------- 
+!   HP model terms (HPModelswitch + 6 more terms) are:
+!   First no. = italic l (TC, table 2a) & 'transition' (perplex) for switch either 1 (= Landau theory parameters, Table 2b in HP11) or 2 (= Symmetric formalism parameters, Table 2c in HP11) or 4 (= melt dkappa0/dT); 
+!   Second no. = Landau critical T (TC) & t1 (Perplex) for switch 1; or delH SF for switch 2; 
+!   Third no. = Landau S_max (TC) & t2 (perplex) for switch 1; or delV SF for switch 2;
+!   Fourth no. = Landau V_max (TC) & t3 (perplex) for switch 1; or W SF for switch 2;
+!   Fifth no. = 0 for switch 1; or Wv SF for switch 2 
+!   Sixth no. = 0 for switch 1; or n (= number of Si disordering with each Al) SF for switch 2; 
+!   Seventh no. = 0 for switch 1; or Fac (= scaling factor on energy of disordering) SF for switch 2.
+!--------------------------------------- 
+!	Nonideal activity terms
+!	Nonideal part is made from a generalized expression for each excess term:
+!	NIDPointer for each phase component points to the first NIDterm
+!	arrays are: NIDWH  NIDWS  NIDWV
+!	            NIDCa  NIDCb
+!	NIDXa   Xa1  Xa2  Xa3  - these are indexes that refer to the list of cations-on-sites in the mineral header
+!	NIDXb   Xb1  Xb2  Xb3  -    "    "   "
+!	Equation is     (WH - TK*Ws + Pbars*Wv) * (Ca*Xa1*Xa2*Xa3) (sum over NoX terms)
+!	Look at mineral header (Xstype = 0 for an ionic non-ideal model (e.g. Spear et al, etc)
+!                                       Xstype = 1 for a molecular non-ideal model (symmetric formalism of Holland and Powell)
+!	Note that if the index for Xa1 etc = 0 then the value is set = 1 (i.e. a constant)
+!	Note that the DQF term can be incorporated as follows
+!	DQF terms (H,S,V)  NoX=1 Ca=1 Xa1=Xa2=Xa3 = 0 - for example...
+!               WH    WS   Wv    NoX  Ca  NXa1 NXa2 NXa3 
+!              14000.  0   0.     1     1.   0   0    0     DQF for Mrg in Paragonite
+! NOTE: The line of $$$ marks the beginning of the datafile entries (must be only $$$$$)
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+! TC-ds62 notes:
+! "Molar thermodynamic properties (units: kJ, K, kbar) of the end-members whose formulae can be found in Table 1."
+! Gibbs dataset notes:
+! 2XXX Mineral Number indicates HP2011 Min Data  
+! MnNCKFMASH Debug Pelite Thermodatabase   
+! example header for multicomponent entry:
+!2030            garnet
+!      #_phase_components        Phase_data_type(see codes above)   #of_site_atoms   #reciprocal_terms(SPaC only)                 
+!C       XMg      XFe     XMn      XCa       YAl      YFe3+    !Site 
+!0        1        2       3        4        5        6        !Site Code
+!         3        3       3        3        2        2        ! Site Multiplicity
+! Single ! before number comments out whole min entry
+! Thermodata from tc-ds62.txt      A-X from tc-6axmn.txt   Thermocalc 6.0 files
+! HoPo refs
+! white mica coding (for mu, pa) from smye et al (2010)
+!
+! For apatite: copy a-x-thermo scripts directly across from DK8b dataset.
+! For mnz, ThSiO4 will change using ds62, so update H,S,V for that. All others will remain unchanged.
+! For allanite, will need to modify H, S, V, Cp, v-terms as it relies on ds62 alm, grs, Al2O3.
+! For TE-melt, will need to modify H, S, V, Cp, v-terms for Al2P2O8L based on Al2O3 now being from ds62. All others remain unchanged.
+*****************************************************************************************************************                                                                                                                                                                                                                                                                                                         
+ 2001     Quartz-a								! Checked FSS 3_6_2017 DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Quartz	
+-910720	41.43	2.269				! original H was -910720 J
+92.9	-716.1	-714900	0	0	-0.000642	0
+0	730000.	 6	 525.2345679		! Nos: alpha0 (TC) & b1 (perplex); kappa0 (TC) & b6 (Perplex); kappa0' (TC) & b8 (Perplex); Debye Temperature [K] or theta (TC). 
+! 0	595000.	 6	 525.2345679		! Try 595000 for kappa0 based on Angel et al. 2017 CMP.
+1	847	 4.95	0.1188	0	0	0     O  ! Nos: italic l (model switch TC, table 2a); Landau critical T (TC); Landau S_max_disorder (TC); Landau V_max_disorder (TC); 0; 0; 0.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1
+*****************************************************************************************************************                                                                                                                                                                                                                               
+2101      Tridymite								!DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Tridymite	
+-907110	44.1	2.8				
+74.9	-236.7	-1174000	0	0	0.0031	0
+0	150000	4.36	503.1220435			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1
+*****************************************************************************************************************                                                   											
+2102     Cristobalite								!DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Cristobalite	
+-904270	50.86	2.745				
+72.7	0	-4129000	0	0	0.001304	0
+0	160000	4.35	454.6594471			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1
+*****************************************************************************************************************                                                                                                                                                                                                                               
+2103     Coesite 								!DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Coesite	
+-907000	39.6	2.064				
+107.8	-1041.6	-190300	0	0	-0.003279	0
+0.0000123	979000	4.19	541.5478615			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1
+*****************************************************************************************************************                                                   											
+2105     Qtz_Coe			Quartz-Coesite 								!DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Coesite	
+-907000	39.6	2.064				
+107.8	-1041.6	-190300	0	0	-0.003279	0
+0.0000123	979000	4.19	541.5478615			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1
+*****************************************************************************************************************                                                   											
+2003     Fluid                                                                                                                                                                                                                                                                                                                
+1         204        0       0                                                                                                                           
+H2O	   water
+-241810	188.8	0									! Checked FSS 3_6_2017
+40.1	-251.2	487500	0	0	0.008656	0	
+0.000	0	0	153			! should 4th term be 153 rather than 0? (from TC)
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+H2O=1
+*****************************************************************************************************************                                                   											
+2002     Fluid_H2O-CO2                                                                                                                                                                                                                                                                                                                 
+! a       b        c       d     e    f
+2         204        2       0       ! a:# end-members   b: not used (defunct,so =0)  c:site type (0=single site,9=multisite)   d:xsType (0=Spac,1=Hopo98,2=Hopo11)    e:Number of Sites or atoms   f:New Comps(possibly # OF END-MEMBERS???)                 
+C      H2O    CO2
+0      1       2         !Indexes of site atoms
+       1       1         !Site multiplicities for each site
+-----------------------------------------------	
+H2O	   water
+-241810	188.8	0									! Checked FSS 3_6_2017
+40.1	-251.2	487500	0	0	0.008656	0	
+0.000	0	0	0
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+H2O=1
+-----------------------------------------------	
+CO2	   carbon-dioxide
+-393510	213.7	0	
+87.8	-998.9	706400	0	0	-0.002644	0	
+0.000E+00	0	0	0
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+CO2=1
+-----------------------------------------------	
+! Cations on sites to component definitions
+     H2O    CO2
+      1      0    H2O
+      0      1    CO2
+******************************************************************************************************************                                                                                                                                                                                                                              
+2005     Kyanite                               ! Mineral #       Mineral name                               ! Checked FSS 3_6_2017    DS62                                                                                                                                                                                                                                                     
+1               201               0               0      ! #Components (i.e. end-members)     Input phase data type       #of atoms       reciprocal terms                                                                                                                 
+Ky          			                               ! Comp1 Abb       Comp1 Name 		
+-2592970	83.5	4.414		                       ! H(j/m)          S(j/mK)         V(j/bar)   		
+279.4	-2289.4	-2055600	0	0	-0.007124	0      ! Cp-a          Cp-b          Cp-c          Cp-d          Cp-e    Cp-f            Cp-g           Cp=a + b/T^1/2 + c/T^2 + d/T^3 + e/T + f*T + g*T^2
+0.0000192	1601000.	4.050	630.1881203			   ! v1             v2             v3             v4    where V(P2,T2) = V(Pr,Tr)*(1 + v1*(T2-Tr) + v2*(T2-Tr)^2 + v3*(P2-Pr) + v4*(P2-Pr)^2)    
+0	0	0	0	0	0	0                              ! HP model terms (HPModelswitch + 6 more terms)
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2                                              ! Composition
+******************************************************************************************************************                                                                                                                                                                                                                              
+2006     Sillimanite                                                         ! Checked FSS 3_6_2017   DS62                                                                                                                                                                                                                                                          
+1               201               0               0                                                                                                                               
+Sil					
+-2585790	95.4	4.986				
+280.2	-2399.4	-1375700	0	0	-0.0069	0
+0.0000112	1640000.	5.060	579.145113			
+2	4750.	0.01	4750.	0.01	1	0.25
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+2007               Andalusite                                                         ! Checked FSS 3_6_2017      DS62                                                                                                                                                                                                                                                       
+1               201               0               0                                                                                                                               
+Andal	
+-2588670	92.7	5.153				
+277.3	-2265.6	-1914100	0	0	-0.006588	0
+0.0000181	1442000.	6.890	589.9875191			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+2008               KySilAnd                                                                ! DS62 OK                                                                                                                                                        
+1               208               0	0
+KSA             KySilAnd                                                                                                                                                                                                                                                                                                      
+0               0               0
+0               0               0               0               0               0               0
+0               0               0               0
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+2013            Pyrophyllite								! Checked FSS 3_6_2017   DS62
+1               201               0               0                                                                                                                               
+Pyrophyllite					
+-5640610	239	12.804				
+784.5	-8495.9	1251000	0	0	-0.042948	0
+0.000045	370000	10	578.3578032			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4 Al=2 H2O=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+2015            Paragonite (pure)							! DS62
+1               201               0               0                                                                                                                               
+pa	Paragonite
+-5942840	277	13.211				
+803	-8151	217000	0	0	-0.03158	0
+0.000037	515000	6.51	541.8105958			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 Na=1 H2O=1
+******************************************************************************************************************
+2016        Margarite (pure)   								! DS62
+1               201               0               0                                                                                                                               
+ma	Margarite
+-6242070	265	12.964				
+744.4	-6783.2	-2074400	0	0	-0.0168	0
+0.0000233	1000000	4.08	558.0551669			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=4 Ca=1 H2O=1
+******************************************************************************************************************                                                                                                                                                                                                                             
+2216	Muscovite !(pure)     								! DS62
+1               201               0               0                                                                                                                               
+Muscovite				!thermo only	
+-5976510	292	14.083				
+756.4	-6979.2	-2170000	0	0	-0.01984	0
+0.0000307	490000	4.15	522.7881285				
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 K=1 H2O=1
+!******************************************************************************************************************
+!=====================
+!Order of lines in special case (= 9) minerals
+! Name
+! H  S  V
+! Cp terms
+! V terms
+! HP model (ideal, Landau, Bragg-Williams)
+! HP11 DQF terms
+! Composition
+! Alpha factors for ideal activity. For the activity to make sense, the site variables need to be FRACTIONS, not cations.
+! ASF Size parameter   (can be  1   0   0   but NOT   0   0   0)
+!=====================
+!******************************************************************************************************************
+******************************************************************************************************************
+2017	Muscovite                  ! DS62 SF model
+! #components (end-members);  Input phase data type;  No. of atoms (or sites);  No. of reciprocal terms (for SPaC multicomponent phases. All other types will be 0)                
+4               203                9              0                                                                                                                                         
+C     SiT2   SiT1    AlT1    AlM2A  MgM2A  FeM2A   AlM2B     K   Na  ! multiplicities, not site fractions
+0      1       2        3      4      5      6       7       8    9
+       2       2        2      1      1      1       1       1    1    
+-----------------------------------------------	
+Celadonite										!DS62		
+-5834840	290	13.957									! H, S, V
+741.2	-6616.9	-2368800	0	0	-0.018748	0		! Cp terms
+0.0000307	700000	4.11	525.2469194					! V terms
+0	0	0	0	0	0	0								! HP model, ideal, Landau, Bragg-Williams)
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4 Al=1 Mg=1 K=1 H2O=1								! composition
+! C   XSiT2   XSiT1   XAlT1  XAlM2A XMgM2A XFeM2A  XAlM2B   XK   XNa
+1.     0.      2.      0.     0.      1.     0.      0.      1.   0.        ! Alpha factors for ideal activity. For the activity to make sense, the site variables need to be FRACTIONS, not cations.
+0.63 0.0 0.0											! ASF size parameter
+-----------------------------------------------
+Fe-celadonite				!thermo only					! Checked FSS 3_6_2017   DS62
+-5468490	330	14.07				
+756.3	-6928.7	-1586100	0	0	-0.019147	0
+0.0000318	700000	4.11	480.0876967			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4 Al=1 Fe=1 K=1 H2O=1
+! C   XSiT2   XSiT1   XAlT1  XAlM2A XMgM2A XFeM2A  XAlM2B   XK   XNa
+1.      0.     2.      0.      0.     0.     1.      0.     1.     0.                ! Alpha factors for ideal activity
+0.63 0.0 0.0					!ASF size parameter
+-----------------------------------------------
+Muscovite										!DS62	
+-5976510	292	14.083				
+756.4	-6979.2	-2170000	0	0	-0.01984	0
+0.0000307	490000	4.15	522.7881285				
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 K=1 H2O=1
+! C   XSiT2   XSiT1   XAlT1  XAlM2A XMgM2A XFeM2A  XAlM2B   XK   XNa
+4.      0.      1.     1.      1.     0.     0.      0.    1.    0.             !  Alpha factors for ideal activity
+0.63 0.0 0.0					!ASF size parameter
+-----------------------------------------------
+Paragonite										! DS62
+-5942840	277	13.211				
+803	-8151	217000	0	0	-0.03158	0		! should +217000 be -217000?
+0.000037	515000	6.51	541.8105958			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 Na=1 H2O=1
+! C   XSiT2   XSiT1   XAlT1  XAlM2A XMgM2A XFeM2A  XAlM2B   XK   XNa
+4.      0.      1.     1.      1.     0.     0.      0.     0.    1.             !  Alpha factors for ideal activity
+0.37 0.0 0.0
+-----------------------------------------------
+! Cations on sites to component definitions
+     Celadonite  Fe-celadonite   Muscovite   Paragonite
+            2.          2.           2.        2.      SiT2
+            2.          2.           1.        1.      SiT1
+            0.          0.           1.        1.      AlT1
+            0.          0.           1.        1.      AlM2A
+            1.          0.           0.        0.      MgM2A
+            0.          1.           0.        0.      FeM2A
+            1.          1.           1.        1.      AlM2B
+            1.          1.           1.        0.      K
+            0.          0.           0.        1.      Na
+-----------------------------------------------     
+6               ! number of non-ideal SF terms
+! W terms are taken from tc-6axmn.txt file
+! WH     WS       Wv	ID1     ID2 
+0	  0	0.2	3	1			!W(mu,cel)        0.00 0.0000  0.200
+0	  0	0.2	3	2			!W(mu,fcel)       0.00 0.0000  0.200
+10120.	 -3.4	0.353	3	4			!W(mu,pa)   [even though TC ax file has +3.4]
+0	  0	0	1	2			!W(cel,fcel)      0  0  0
+45000	  0	0.25	1	4			!W(cel,pa)       45  0  0.25
+45000	  0	0.25	2	4			!W(fcel,pa)      45  0  0.25
+------------------------------------------------
+0          ! Number of new variables
+******************************************************************************************************************                                                                                                                                                                                                                             
+2018	Paragonite                  !     DS62 SF model
+4               203                9              0  
+C      SiT2    SiT1    AlT1   AlM2A  MgM2A  FeM2A   AlM2B    K    Na
+0      1       2        3      4      5      6       7       8    9
+       2       2        2      1      1      1       1       1    1    
+-----------------------------------------------	
+Celadonite										!DS62		
+-5834840	290	13.957				
+741.2	-6616.9	-2368800	0	0	-0.018748	0
+0.0000307	700000	4.11	525.2469194			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4 Al=1 Mg=1 K=1 H2O=1
+1.   0.   2.   0.   0.   1.   0.   1.    1.   0.                  Alpha factors for ideal activity
+0.63 0.0 0.0					!ASF size parameter
+-----------------------------------------------
+Fe-celadonite				!thermo only					! Checked FSS 3_6_2017   DS62
+-5468490	330	14.07				
+756.3	-6928.7	-1586100	0	0	-0.019147	0
+0.0000318	700000	4.11	480.0876967			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4 Al=1 Fe=1 K=1 H2O=1
+1.   0.   2.   0.   0.  0.   1.   1.     1.     0.              !   Alpha factors for ideal activity
+0.63 0.0 0.0					!ASF size parameter
+-----------------------------------------------
+Muscovite										!DS62	
+-5976510	292	14.083				
+756.4	-6979.2	-2170000	0	0	-0.01984	0
+0.0000307	490000	4.15	522.7881285				
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 K=1 H2O=1
+4.   0.    1.   1.   1.   0.   0.    1.   1.    0.             !  Alpha factors for ideal activity
+0.63 0.0 0.0					!ASF size parameter
+-----------------------------------------------
+Paragonite										! DS62
+-5942840	277	13.211				
+803	-8151	217000	0	0	-0.03158	0
+0.000037	515000	6.51	541.8105958			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 Na=1 H2O=1
+4.   0.    1.   1.   1.   0.   0.    1.   0.    1.             !  Alpha factors for ideal activity
+0.37 0.0 0.0
+-----------------------------------------------
+! Cations on sites to component definitions
+           Cel         FeCel       Ms      Pa
+            2.          2.          2.      2.    SiT2
+            2.          2.          1.      1.    SiT1
+            0.          0.          1.      1.    AlT1
+            0.          0.          1.      1.    AlM2A
+            1.          0.          0.      0.    MgM2A
+            0.          1.          0.      0.    FeM2A
+            1.          1.          1.      1.    AlM2B
+            1.          1.          1.      0.    K
+            0.          0.          0.      1.    Na
+-----------------------------------------------     
+6               !number of non-ideal terms
+! W terms are taken from tc-6axmn.txt file
+! WH     WS       Wv     ID1     ID2 
+0		0		.2		3	1	!W(mu,cel)        0.00 0.0000  0.200
+0		0		.2		3	2	!W(mu,fcel)       0.00 0.0000  0.200
+10120. -3.4	    .353	3	4	!W(mu,pa)   [even though TC ax file has +3.4]
+0		0		0		1	2	!W(cel,fcel)      0  0  0
+45000	0		0.25	1	4	!W(cel,pa)       45  0  0.25
+45000	0		0.25	2	4	!W(fcel,pa)      45  0  0.25
+------------------------------------------------
+0 	! List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                             
+2022             Biotite                           !      DS62  (symm formalism)     Mutliple end members do not match, need to make these end members                                                                                                                                                                                                               
+5               203                11              0                                                                                                                                  
+C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   MgM12   FeM12   MnM12  K      ! Names of site atoms
+0    1      2     3       4      5     6      7       8      9      10    11     ! Indexes of site atoms
+     2      2     2       1      1     1      1       2      2      2     1      ! Multiplicities for each site, NOT site fractions
+----------------------------------
+Phlogopite									!DS62
+-6214880.	326	14.964	
+770.3	-6531.6	-2328900	0	0	-0.036939	0	
+3.8e-5	513000	7.33	500.325	
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Mg=3 K=1 H2O=1
+! C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   MgM12   FeM12   MnM12  K      !Names of site atoms
+4.      0.    1.    1.    0.     1.      0.    0.     2.       0.      0.   0.         !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+Eastonite										!DS62
+-6330380.	318	14.738	
+785.5	-6893.7	-2130300	0	0	-0.038031	0	
+3.8e-05	530000	7.33	 509.03									
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=3 Mg=2 K=1 H2O=1
+! C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   MgM12   FeM12   MnM12  K      !Names of site atoms
+1.      0.    0.    2.    1.     0.     0.     0.      2.      0.     0.    0.      !   Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+Annite											! DS 62
+-5143720	420	15.432		! no dqf
+! -5146720.	420.	15.432								! -3 kJ added for DQF
+815.7	-7466.7	19800	0	0	-0.034861	0
+3.8e-5	513000	7.33	416.593			
+0	0	0	0	0	0	0
+! DQF -3000 0 0
+1	-3000	0	0			! DQF
+Si=3 Al=1 Fe=3 K=1 H2O=1
+! C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   MgM12   FeM12   MnM12  K      !Names of site atoms
+4       0.     1.   1.    0.     0.     1.     0.      0.      2.      0.   0.          ! Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+Mn-biotite										!DS62
+-5477520	433	15.264		! no dqf
+! -5485410	433	15.264			! H = -5477520 (ds62) with -7890 J added for DQF.
+809.9	-6998.7	-1514400	0	0	-0.059213	0
+3.8e-5	530000	7.33	407.169				
+0	0	0	0	0	0	0
+! DQF -7890 0 0
+1	-7890	0	0		! DQF
+Si=3 Al=1 Mn=3 K=1 H2O=1
+! C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   MgM12   FeM12   MnM12  K      !Names of site atoms
+4       0.    1.    1.    0.     0.     0.     1.     0.       0.      2.   0.         !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+OrderBiotite										
+! "make" from Obi = 1/3annite + 2/3phlogopite + DQF = -3kJ					
+-5857826.667	357.3333333	15.12		! no dqf
+! -5860827	357.3333333	15.12							! DQF added 
+785.4333333	-6843.3	-1546000	0	0	-0.036246333	0
+0.000038	513000	7.33	468.9093144			!  summative theta = 472.3333333 K.			
+0	0	0	0	0	0	0
+! DQF -3000  0  0
+1	-3000.	0	0
+Si=3 Al=1 Mg=2 Fe=1 K=1 H2O=1	
+! C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   MgM12   FeM12   MnM12  K      !Names of site atoms
+4.      0.    1.    1.    0.     0.     1.     0.      2.      0.      0.   0.       !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+! Cations on sites to component definitions  !see hopo98 data file for cation on sites not included
+phl  east   ann     Mnbi   Obi       : Sites as a function of components  
+2.    2.    2.        2     2       SiT2
+1.    0.    1.        1     1       SiT1
+1.    2.    1.        1     1       AlT1
+0.    1.    0.        0     0       AlM3
+1.    0.    0.        0     0       MgM3
+0.    0.    1.        0     1       FeM3
+0.    0.    0.        1     0       MnM3
+2.    2.    0.        0     2       MgM12
+0.    0.    2.        0     0       FeM12
+0.    0.    0.        2     0       MnM12
+1.    1.    1.        1     1       K    
+----------------------------------
+10               !number of non-ideal terms     !X = no margules in tc-ds62.txt
+!  WH    WS   Wv     ID1  ID2 
+10000         0         0      1     2   !W(phl,east)
+12000         0         0      1     3   !W(phl,ann)
+9000          0         0      1     4   !W(phl,Mn-bt)
+4000          0         0      1     5   !W(phl,obi)
+15000         0         0      2     3   !W(east,ann)
+13000         0         0      2     4   !W(east,Mn-bt)
+7000          0         0      2     5   !W(east,obi)
+6300          0         0      3     4   !W(ann,Mn-bt)
+8000          0         0      3     5   !W(ann,obi)
+8100          0         0      4     5   !W(Mn-bt,obi)
+!	4 kJ/Fe-Mg exchange = 4 kJ. 
+!	1 kJ/Mg-Al
+!	15 kJ/Fe3-Mg2Al (8 for Fe2-Mg2 and 7 for Fe-Al)
+!	Sid-Phl is 2Fe-Mg + 1Mg-Al = 9 kJ
+!	Sid-East is 2FeMg = 8kJ
+!	Sid-ann is 1FeAl = 7 kJ
+!	Sid-Obi is 2FeMg + 1 FeAl = 15
+!	2.1 kJ/Fe-Mn
+!	3. kJ/Mn-Mg
+!	7 kJ/MnAl
+!	Sid-MnB is 2FeMn + 1MnAl = 4.2+7 = 11.2
+----------------------------------  
+0 	! List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                             
+2023             Biotite                           !      DS62  (symm formalism)     Mutliple end members do not match, need to make these end members                                                                                                                                                                                                               
+7               203                15              0                                                                                                                                  
+C    SiT2  SiT1  AlT1  AlM3   MgM3   FeM3   MnM3   Fe3M3   TiM3   MgM12   FeM12   MnM12  K    VOH   VO   !Names of site atoms (cations, NOT site fractions)
+0    1      2     3       4      5     6      7       8      9      10      11     12    13    14   15  !Indexes of site atoms
+     2      2     2       1      1     1      1       1      1       2      2      2     1      2    2  !Site multiplicities for each site
+----------------------------------
+Phlogopite									!DS62
+-6214950.	326.	14.964	
+!-6214660.	326	14.964	
+770.3	-6531.6	-2328900	0	0	-0.036939	0	
+3.8e-5	513000	7.33	500.325	
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Mg=3 K=1 H2O=1
+! C   SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  VOH  VO   !Names of site atoms
+4.     0.    1.    1.    0.    1.    0.    0.     0     0     2.      0.     0.   0.  0   0       !  Alpha factors for ideal activity. Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+Eastonite										!DS62
+-6330480.	318	14.738	
+!-6330210.	318	14.738	
+785.5	-6893.7	-2130300	0	0	-0.038031	0	
+3.8E-05	530000	7.33	 509.03									
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=3 Mg=2 K=1 H2O=1
+! C   SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  VOH  VO   !Names of site atoms
+1.     0.    0.    2.    1.    0.    0.    0.     0     0      2.     0.    0.    0.  0   0   !   Alpha factors for ideal activity. Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+Annite											! DS 62
+-5144230.0	418.	15.432								! 
+!-5146750.	420.	15.432								! -3 kJ added for DQF
+815.7	-7466.7	19800	0	0	-0.034861	0
+3.8e-5	513000	7.33	416.593			
+0	0	0	0	0	0	0
+1	-3000.	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Fe=3 K=1 H2O=1
+! C   SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  VOH  VO   !Names of site atoms
+4       0.   1.    1.    0.    0.    1.    0.     0      0     0.     2.     0.   0.  0   0       ! Alpha factors for ideal activity. Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+Mn-biotite										!DS62
+-5485330	433	15.264			! H = -5477440 (ds62) with -7890 J added for DQF. Original value was -5477520, which is not ds62 value, so not sure where it came from.
+809.9	-6998.7	-1514400	0	0	-0.059213	0
+3.8e-5	530000	7.33	407.169				
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Mn=3 K=1 H2O=1
+! C   SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  VOH  VO   !Names of site atoms
+4      0.    1.    1.    0.    0.    0.     1.    0      0     0.     0.     2.   0.  0    0       !  Alpha factors for ideal activity. Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+OrderedBiotite										! "made" from Obi = 1/3annite + 2/3phlogopite + DQF = -3kJ					
+-5858043.	357.3333333	15.12							! DQF added 
+!-5860690	357.3333333	15.12							! DQF added 
+785.4333333	-6843.3	-1546000	0	0	-0.036246333	0
+0.000038	513000	7.33	472.3333333			
+0	0	0	0	0	0	0
+1	2000.	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Mg=2	Fe=1 K=1 H2O=1	
+! C   SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  OHV  OV   !Names of site atoms
+4.      0.    1.   1.    0.   0.     1.    0.     0     0      2.    0.      0.   0.  2    0     !  Alpha factors for ideal activity. Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+Fe3-biotite
+-5893545.	348.7	15.0725				
+!-5896255	348.7	15.0725				
+791.8	-6886.85	-1718250	0	0	-0.038031	0
+0.0000413	464000	7.405	471
+0	0	0	0	0	0	0
+1	-3000.	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=2 Fe3=1 Mg=2 K=1 H2O=1
+! C    SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  VOH  VO   !Names of site atoms
+1      0      0     2     0      0     0     0     1     0     2      0      0     0   2   0 			! Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+Ti-biotite
+-6233670.	313.3	14.383				
+!-6178430	313.3	14.383				
+702.3	-5984.1	-1276600	0	0	-0.029963	0
+-0.0000016	2318000	5.12	400
+0	0	0	0	0	0	0
+1	55000.	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Ti=1 Mg=2 K=1
+! C   SiT2  SiT1  AlT1  AlM3  MgM3  FeM3  MnM3  Fe3M3  TiM3  MgM12  FeM12  MnM12  K  VOH  VO   !Names of site atoms
+4      0      1     1     0     0     0     0     0     1      2      0      0    0   0    2 			! Indices/powers of site fractions.
+1	0	0			 	! ASF size parameter
+----------------------------------
+! Cations on sites to component definitions  !see hopo98 data file for cation on sites not included
+phl  east   ann     mnbi   obi   fbi   tbi      : Sites as a function of components  
+2.    2.    2.        2     2     2     2    SiT2
+1.    0.    1.        1     1     0     1    SiT1
+1.    2.    1.        1     1     2     1    AlT1
+0.    1.    0.        0     0     0     0    AlM3
+1.    0.    0.        0     0     0     0    MgM3
+0.    0.    1.        0     1     0     0    FeM3
+0.    0.    0.        1     0     0     0    MnM3
+0     0     0         0     0     1     0    Fe3M3
+0     0     0         0     0     0     1    TiM3
+2.    2.    0.        0     2     2     2    MgM12
+0.    0.    2.        0     0     0     0    FeM12
+0.    0.    0.        2     0     0     0    MnM12
+1.    1.    1.        1     1     1     1    K 
+2     2     2         2     2     2     0    OHV
+0     0     0         0     0     0     2    OV
+----------------------------------
+21               !number of non-ideal terms     ! X = no margules in tc-ds62.txt
+!  WH    WS   Wv     ID1  ID2 
+10000         	0       0       1     	2   	!W(phl,east)
+12000         	0       0       1     	3   	!W(phl,ann)
+9000          	0       0       1     	4   	!W(phl,Mn-bt)
+4000          	0       0       1     	5   	!W(phl,obi)
+8000	      	0	0	1	6	!W(phl,fbi)
+30000	      	0	0	1	7	!W(phl,tbi)
+15000		0     	0       2     	3   	!W(east,ann)
+13000         	0       0       2     	4   	!W(east,Mnbi)
+7000          	0       0       2     	5   	!W(east,obi)
+1000		0	0	2	6	!W(east,fbi)
+40000		0	0	2	7	!W(east,tbi)
+6300          	0       0       3     	4   	!W(ann,Mnbi)
+8000          	0       0       3     	5   	!W(ann,obi)
+13600		0	0	3	6	!W(ann,fbi)
+32000		0	0	3	7	!W(ann,tbi)
+8100          	0       0       4     	5   	!W(Mnbi,obi)
+11600		0	0	4	6	!W(Mnbi,fbi)
+30000		0	0	4	7	!W(Mnbi,tbi)
+5600		0	0	5	6	!W(obi,fbi)
+24000		0	0	5	7	!W(obi,tbi)
+40000		0	0	6	7	!W(fbi,tbi)
+!	4 kJ/Fe-Mg exchange = 4 kJ. 
+!	1 kJ/Mg-Al
+!	15 kJ/Fe3-Mg2Al (8 for Fe2-Mg2 and 7 for Fe-Al)
+!	Sid-Phl is 2Fe-Mg + 1Mg-Al = 9 kJ
+!	Sid-East is 2FeMg = 8kJ
+!	Sid-ann is 1FeAl = 7 kJ
+!	Sid-Obi is 2FeMg + 1 FeAl = 15
+!	2.1 kJ/Fe-Mn
+!	3. kJ/Mn-Mg
+!	7 kJ/MnAl
+!	Sid-MnB is 2FeMn + 1MnAl = 4.2+7 = 11.2
+----------------------------------  
+0 	! List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+!% coded by axe attack on 08 March 2011
+!%	From file tc-6axmn.txt 
+!%         M1                        M23                 M4                        T2            
+!%         Mg    Mn    Fe    Al      Mg    Mn    Fe      Mg    Fe    Fe3   Al      Si    Al      
+!% clin    1     0     0     0       4     0     0       0     0     0     1       1     1       
+!% afchl   1     0     0     0       4     0     0       1     0     0     0       2     0       
+!% ames    0     0     0     1       4     0     0       0     0     0     1       0     2       
+!% daph    0     0     1     0       0     0     4       0     0     0     1       1     1       
+!% ochl1   1     0     0     0       0     0     4       0     1     0     0       2     0       
+!% ochl4   0     0     1     0       4     0     0       1     0     0     0       2     0       
+!% f3clin  1     0     0     0       4     0     0       0     0     1     0       1     1       
+!% mnchl   0     1     0     0       0     4     0       0     0     0     1       1     1       
+!
+! NOTE: no ferric iron in this model
+2024              Chlorite                       ! DS62 OMW notes Hopo2011 has different end members this test entry is only hopo11 end members   
+7               203                13           0                                                                                                                                                               
+C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23   !Names of site atoms
+0    1     2     3       4      5       6       7       8       9        10     11       12	     13	! Indexes of site atoms
+     2     2     2       1      1       1       1       1       1         1	     4        4       4	! Multiplicities for each site
+----------------------------------
+Clinochlore_ord      								!DS62                                                                                                                                                            
+-8909160	437	21.14				
+1170.8	-10315	-3825800	0	0	-0.001508	0
+0.0000204	870000	4.09	572.4777226
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Mg=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+4.    0.    1.    1.     1.     0.      0.       0.       1.      0.      0.      4.      0.     0.       !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+Mg-Amesite      ! Amesite(14A)								!DS62                                                                                                                                                                
+-9040460	412	20.71				
+1186	-10677	-3627200	0	0	-0.002599	0
+0.00002	870000	4.09	594.7067594			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=4 Mg=4 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+1.     0.   0.    2.     1.     0.      0.       1.       0.      0.      0.      4.       0.     0.       !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+AlfChl   !Al-free chlorite								!DS62
+-8727860	439	21.57						! ds62 value is -8727440 J. Not sure where original value of -8727860 J came from.	
+1155	-9952.9	-4024400	0	0	-0.000417	0
+0.0000204	870000	4.09	570.7709737			    
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4 Mg=6 H2O=4                                                                                                                                                                  
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+1.    0.     2.   0.     0.     1.      0.       0.       1.      0.      0.     4.       0.      0.       !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+Daphnite                                                                                                                   
+-7116910	584	21.62				
+1192	-9768.3	-4826400	0	0	-0.00594	0
+0.0000227	870000	4.09	469.3273191			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Fe=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+4.    0.     1.   1.     1.     0.       0.      0.       0.       1.     0.      0.       4.     0.       !  Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+OChl1                                                                                                                  
+!ochl1   1    4  xMgM1 1  xFeM23 4  xFeM4 1  xSiT2 2  
+!  check 5/6  0  0  0  0  5/6  -1/6  
+!  make  3    afchl    1 clin   -1 daph    1
+!  DQF     3    0    0
+-6935610	586	22.05		! no dqf
+! -6932610	586	22.05						! with DQF = +3000 J added to original H
+1176.2	-9406.2	-5025000	0	0	-0.004849	0
+0.0000227	870000	4.09	468.179595		! 467.6205702			
+0	0	0	0	0	0	0
+! DQF 3000  0  0
+1	3000	0	0			! DQF
+Si=4 Mg=1 Fe=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+1.     0.   2.    0.     0.     0.      1.       0.       1.      0.      0.      0.       4.     0.         Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+OChl4                                                                                                                  
+!ochl4   1    4  xFeM1 1  xMgM23 4  xMgM4 1  xSiT2 2  
+!  check 1/6  0  0  0  0  -5/6  1/6  
+!  make  3    afchl    1 clin -1/5 daph  1/5
+!  DQF     2.4    0    0
+-8369410	468.4	21.666		! no dqf
+! -8367010	468.4	21.666				! with DQF = +2400 J added to original H		
+1159.24	-9843.56	-4224520	0	0	-0.0013034	0
+0.00002086	870000	4.09	546.8068091		! 550.140893			
+0	0	0	0	0	0	0
+! DQF 2400  0  0
+1	2400	0	0			! DQF
+Si=4 Mg=5 Fe=1 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+1.     0.   2.    0.     0.     1.      0.       0.       0.      1.      0.      4.       0.     0.         Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+Mn-Chlorite                                                                                                                  
+-7702320	595	22.59		! no dqf
+! -7707990.	595	22.59				! added -5.67 kJ DQF from TC a-x file
+1136.5	-8911.5	-5548100	0	0	-0.005243	0
+0.0000223	870000	4.09	463.083547					
+0	0	0	0	0	0	0
+! DQF -5670  0  0
+1	-5670.	0	0			! DQF
+Si=3 Al=2 Mn=5 H2O=4
+!C   SiT1  SiT2  AlT2   AlM4   MgM4    FeM4     AlM1     MgM1    FeM1    MnM1	MgM23    FeM23	MnM23
+4.     0.   1.    1.     1.     0.      0.       0.       0.      0.      1.      0.       0.     4.         Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+----------------------------------
+! Cations on sites to component definitions
+  Clin  Ames Afc Daph  	OChl1	OChl4	MnChl	:Sites as a function of components
+    2.   2.   2.  2.     2	2	2	SiT1
+    1.   0.   2.  1.     2	2	1	SiT2      
+    1.   2.   0.  1.     0	0	1	AlT2     
+    1.   1.   0.  1.     0	0	1	AlM4    
+    0.   0.   1.  0.   	0	1	0	MgM4       
+    0.   0.   0.  0.   	1	0	0	FeM4       
+    0.   1.   0.  0.   	0	0	0	AlM1    
+    1.   0.   1.  0.   	1	0	0	MgM1    
+    0.   0.   0.  1.   	0	1	0	FeM1    
+    0.   0.   0.  0.   	0	0	1.	MnM1    
+    4.   4.   4.  0.   	0	4	0	MgM23    
+    0.   0.   0.  4.   	4	0	0	FeM23    
+    0.   0.   0.  0.   	0	0	4	MnM23    
+---------------------------------- 
+21               !number of non-ideal terms
+! WH           WS        Wv     ID1  ID2    
+17000         0         0     	1    	2     !W(clin,ames) 
+17000         0         0     	1    	3     !W(clin,afchl)
+20000         0         0     	1    	4     !W(clin,daph)
+30000         0         0	1	5	W(clin,ochl1) 
+21000         0         0	1	6	W(clin,ochl4) 
+6000          0         0     	1    	7     !W(clin,mnchl)
+16000         0         0     	2    	3     !W(afchl,ames)
+30000         0         0     	2    	4     !W(ames,daph) 
+29000         0         0	2	5	W(ames,ochl1) 
+13000         0         0	2	6	W(ames,ochl4) 
+17000         0         0     	2    	7     !W(ames,mnchl)
+37000         0         0     	3    	4     !W(afchl,daph)
+20000         0         0	3	5	W(afchl,ochl1)
+ 4000         0         0	3	6	W(afchl,ochl4)
+23000         0         0     	3    	7     !W(afchl,mnchl)
+18000         0         0	4	5	W(daph,ochl1) 
+33000         0         0	4	6	W(daph,ochl4) 
+4000          0         0     	4    	7     !W(daph,mnchl)
+24000         0         0	5	6	W(ochl1,ochl4)
+19000         0         0	5	7	W(ochl1,mnchl)
+22000         0         0	6	7	W(ochl4,mnchl)
+!	4 kJ/Fe-Mg exchange  
+!	0.8 kJ Fe-Mn exchange
+!	1.2 kJ Mg-Mn exchange
+!	17 kJ/Mg-Al
+!	16  kJ Fe-Al
+!	12.2 kJ Mn-Al
+!	Note that W(FeAmes,MnChl) is needed in MnKFASH system
+!	W(FeAmes,OChl) is not needed because if we have Mg then we use Mg-Ames
+---------------------------------- 
+0	!List of new variables
+******************************************************************************************************************
+2030            Garnet			! DS62
+4               203               6               0                                                                                                                 
+C       Mg       Fe      Mn       Ca      Al       Fe3		! names of site atoms
+0        1        2       3        4       5        6		! Indexes of site atoms
+         3        3       3        3       2        2		! site multiplicities for each site
+-----------------------------------------------
+Pyrope									!DS62
+-6282130.	269.5	11.313				! original value = -6281960. not sure where it comes from.
+!-6281960	269.5	11.313				! original value = -6281960. not sure where it comes from.
+633.5	-4315.2	-5196100	0	0	0	0
+0.0000237	1743000	4.05	534.0697966			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Mg=3
+1.    3.   0.   0.   0.    0.    0.         	!alpha factors for ideal activities
+1	0	0			 	! ASF size parameter
+-----------------------------------------------
+Almandine									!DS62									! Checked FSS 3_6_2017   
+-5260650.	342	11.525				
+677.3	-5044	-3772700	0	0	0	0
+0.0000212	1900000	2.98	451.826678			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Fe=3
+1.    0.   3.   0.   0.    0.    0.         	!alpha factors for ideal activities
+1	0	0			 	!ASF size parameter
+-----------------------------------------------
+Spessartine									!DS62
+-5693650.	335.3	11.792				!  original value = -5693490 J.
+!-5693490	335.3	11.792				!  original value = -5693490 J.
+646.9	-4452.8	-4525800	0	0	0	0
+0.0000227	1740000	6.68	458.3494936			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Mn=3
+1.    0.   0.   3.   0.    0.    0.         	!alpha factors for ideal activities
+1	0	0			 	!ASF size parameter
+-----------------------------------------------
+Grossular									!DS62
+-6642950	255	12.535					
+!-6643010	255	12.535					! original value = -6643010 J.
+626	-4002.9	-5779200	0	0	0	0
+0.000022	1720000	5.53	554.2470036			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Ca=3
+1.    0.   0.   0.   3.    0.    0.         	!alpha factors for ideal activities
+2.7	0	0			 	!ASF size parameter
+-----------------------------------------------
+!Andradite					Values are not checked, nor is activity
+!-5769080.	316.4	13.204					
+!638.6	-3989.2 -4955100.  0	0	0	0
+!0.0000286	1588000.  5.68	  554.2470036			
+!0	0	0	0	0	0	0
+!Si=3 Fe3=2 Ca=3
+!1.    0.   0.   0.   3.    0.    2.         	!alpha factors for ideal activities
+!2.7	0	0			 	!ASF size parameter   ??
+!-----------------------------------------------
+! Cations on sites to component definitions
+     Prp     Alm     Sps     Grs
+     3        0       0       0     Mg
+     0        3       0       0     Fe
+     0        0       3       0     Mn
+     0        0       0       3     Ca
+     2        2       2       2     Al
+     0        0       0       0     Fe3
+------------------------------------------------
+6               ! number of non-ideal terms (metapelite set)
+!  WH    WS   Wv   	   ID1  ID2 
+  2500.  0     0		1	2  	! W(Pyrope-Almandine)
+  2000.  0     0 		1	3	! W(Pyrope-Spessartine)
+ 31000.  0     0		1	4	! W(Pyrope-Grossular)
+  5000.  0     0    	2	4	! W(Almandine-Grossular)
+  2000.  0     0    	2	3	! W(Almandine-Spessartine)
+   0	 0     0    	3	4	! W(Spessartine-Grossular)
+------------------------------------------------
+0 	! List of new variables
+******************************************************************************************************************
+2040	Staurolite			! DS62
+3               203               6               0                                                                                                                
+C       Si       Al     Mg      Fe      Mn		H2O  	! names of site atoms
+0        1       2      3		4        5       6	! Indexes of site atoms
+         7.5     18     4       4        4		 2	! site multiplicities for each site
+-----------------------------------------------
+Mg-Staurolite	
+-25123740	910	44.26		! no dqf
+! -25131740	910	44.26								! original value = -25131740 J. New value is ds62 value with -8000 J DQF added.
+2820.5	-24126	-13774000	0	0	-0.059366	0
+0.0000181	1684000	4.05	604.1244442			
+0	0	0	0	0	0	0
+! DQF -8000  0  0
+1	-8000.	0	0			! DQF
+Si=7.5 Al=18 Mg=4 H2O=2
+1.    0  0    4.    0.    0.   0      Alpha factors
+1	0	0			 	 !ASF size parameter
+-----------------------------------------------
+Fe-Staurolite										! DS62   
+-23754630	1010	44.88				  ! original value = -23754630 J.
+2880	-25373	-10642000	0	0	-0.056595	0
+0.0000183	1800000	4.76	564.764213			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=7.5 Al=18 Fe=4 H2O=2
+1.    0  0   0.    4.    0.   0     Alpha factors
+1	0	0			 	 !ASF size parameter
+-----------------------------------------------
+Mn-Staurolite	
+-24245850	1034	45.46	 ! no dqf		! original value = -24245850 J. New value is ds62 value with -190 J added.
+! -24246040	1034	45.46			! with DQF = -190 J.
+2873.3	-24749	-12688000	0	0	-0.089064	0
+0.0000209	1800000	4.76	556.0691788			
+0	0	0	0	0	0	0
+! DQF -190  0  0
+1	-190.	0	0			!DQF
+Si=7.5 Al=18 Mn=4 H2O=2
+1.   0  0    0.    0.    4.   0     Alpha factors
+1	0	0			 	 !ASF size parameter
+-----------------------------------------------
+! Cations on sites to component definitions
+     MgSt    FeSt    MnSt 
+     7.5     7.5     7.5    Si
+     18       18      18    Al
+     4        0       0     Mg
+     0        4       0     Fe
+     0        0       4     Mn
+     2        2       2     H2O
+-----------------------------------------------
+ 3               number of non-ideal terms
+!  WH    WS   Wv     ID1  ID2 
+16000         0         0    1   2     !W(mst,fst)
+12000         0         0    1   3     !W(mst,mnst)
+8000          0         0    2   3     !W(fst,mnst)
+-----------------------------------------------
+0	 Number of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+2041	Chloritoid				! DS62
+3               203               6               0                                                                                                                 
+C        Si     Al      Mg      Fe     Mn    H2O
+0        1       2      3       4      5       6
+         1       2      1       1       1       1
+-----------------------------------------------
+Mg-Chltd									!DS62
+-3549250	146	6.875				! original value = -3549250 J.
+417.4	-3417.8	-2920600	0	0	-0.003771	0
+0.0000263	1456000	4.06	601.8979627			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2 Mg=1 H2O=1
+1.   0  0    1.    0.    0.   0     Alpha factors
+1	0	0			 	 !ASF size parameter
+-----------------------------------------------
+Fe-Chltd										!DS62 
+-3208290	167	6.98				! original value = -3208290 J.
+416.1	-3360.3	-2835900	0	0	-0.003477	0
+0.000028	1456000	4.06	551.4837269			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2 Fe=1 H2O=1
+1.   0  0    0.    1.    0.   0     Alpha factors
+1	0	0			 	 !ASF size parameter
+-----------------------------------------------
+Mn-Chltd	
+-3336150	166	7.175		! no dqf		! orignal value = -3336150 J. New value is ds62 value with +660 J added.
+! -3335490	166	7.175		! with DQF = +660 J.
+464.4	-4341	-1147200	0	0	-0.012654	0
+0.000026	1456000	4.06	553.6921352			
+0	0	0	0	0	0	0
+! DQF 660  0  0
+1	660.	0	0			! DQF
+Si=1 Al=2 Mn=1 H2O=1
+1.   0  0    0.    0.    1.    0    Alpha factors
+1	0	0			 	 !ASF size parameter
+-----------------------------------------------
+! Cations on sites to component definitions    
+   MgCtd    FeCtd   MnCtd 
+     1        1       1     Si
+     2        2       2     Al
+     1        0       0     Mg
+     0        1       0     Fe
+     0        0       1     Mn
+     1        1       1     H2O
+-----------------------------------------------
+ 3               number of non-ideal terms
+!  WH    WS   Wv     ID1  ID2 
+ 4000   0     0      1   2 		W(mctd,fctd)
+ 3000   0     0      1   3 		W(mctd,mnctd)
+ 3000   0     0      2   3 		W(fctd,mnctd) 
+-----------------------------------------------             
+0	! Number of new variables      
+******************************************************************************************************************   
+2044            Cordierite     ! DS62  OMW, there are 11 apparent volume terms in Hopo 11, used only first 2 k terms possibly in error
+4               203                7              0                                                                                                                                
+C        Si    Al     Mg     Fe     Mn      H2O     V   
+0        1      2      3       4	   5     6      7
+         5      4      2       2       2     1	   1
+!The activity models need to be checked out
+!   for the ideal activity, is the vacancy in the H2O site used or not? DEK: yes, it is
+!   Maybe Dick White et al talk about this
+-----------------------------------------------
+Cordierite(dry)								! DS62
+-9163430	404.1	23.322				!  -9163430 J = original value
+906.1	-6293.4	-7902000	0	0	0	0
+0.0000068	1290000	4.1	522.0255221			
+2	36710	0.1	36700	0.1	2	1.5
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=5 Al=4 Mg=2
+1.   0  0  2    0.    0.    0.   1.        Alpha factors
+1 0 0
+-----------------------------------------------
+H-Cordierite								! DS62
+-9448520   483	23.322					!  original value = -9448520 J.
+955.3	-6301.2	-8352600	0	0	0	0
+0.0000067	1290000	4.1	493.9223312			
+2	36710	0.1	36700	0.1	2	1.5
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=5 Al=4 Mg=2 H2O=1
+1.   0  0  2    0.    0.    1.    0       Alpha factors
+1 0 0
+-----------------------------------------------
+Fe-Cordierite								! DS62	
+-8444070	461	23.71					! original value = -8444070 J.
+924	-6439.6	-7039400	0	0	0	0
+0.0000067	1290000	4.1	476.1701865				
+2	36710	0.1	36700.	0.1	2	1.5
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=5 Al=4 Fe=2
+1.   0  0  0   2        0.    0.    1.        Alpha factors
+1 0 0
+-----------------------------------------------
+Mn-cordierite     							! DS62
+-8693590	473	24.027		! no dqf
+! -8697800	473	24.027						! original value = -8693590 J. New value is ds62 value with -4210 J added.
+886.5	-5590.4	-8840000	0	0	0	0
+0.0000069	1290000	4.1	467.5093974			
+2	36710	0.1	36700	0.1	2	1.5
+! DQF -4210  0  0
+1	-4210.	0	0		! DQF
+Si=5 Al=4 Mn=2
+1.   0  0  0    0.    2.    0.     1      Alpha factors
+1 0 0
+-----------------------------------------------
+! Cations on sites to component definitions
+     Crd     HCrd     FCrd   	MnCrd
+     5       5        5         5     Si
+     4        4       4         4     Al
+     2        2       0      	0     Mg
+     0        0       2       	0     Fe
+     0        0       0       	2     Mn
+     0        1       0       	0     H2O
+     1        0       1       	1     V
+------------------------------------------------
+6               !number of non-ideal terms
+!  WH    WS   Wv     ID1  ID2 
+  0000.  0      0     	1	2  	!W(Crd-HCrd)
+  8000.  0      0     	1	3	!W(Crd-FCrd)
+  6000.  0      0     	1	4	!W(Crd-MnCrd)
+  9000.  0      0     	2	3	!W(FCrd-HCrd)
+  6000.  0      0     	2	4	!W(HCrd-MnCrd)
+  4000.  0      0     	3	4	!W(FCrd-MnCrd)
+!(1) There is 0 W between MgCrd and HMgCrd ..... so I'll assume the same for Fe
+!(2) MnCrd-Crd and MnCrd-HCrd are identical ... so I'll assume the same between MnCrd-FeCrd and MnCrd-HFeCrd
+!(3) I'll assume MgCrd-HFeCrd is the same as MgCrd-FeCrd
+-----------------------------------------------             
+0	! Number of new variables   
+******************************************************************************************************************                                                                                                                                                                                                                            
+2046            Orthopyroxene		! DS62
+6               203               10               0                                                                                                                
+C        SiT   AlT   MgM1   FeM1   MnM1   AlM1   MgM2  FeM2  MnM2  CaM2 	! Site variables
+0        1      2     3      4      5      6      7     8     9     10		! Indexes of sites
+         2      2     1      1		1      1      1     1     1     1		! Site multiplicity ('site variables')
+-----------------------------------------------
+Enstatite
+-3090220	132.5	6.262							! H, S, V
+356.2	-3185.3	-596900	0	0	-0.00299   0		! Cp terms
+0.0000227	1059000	8.65	540						! V terms. 4th value is theta.
+0	0	0	0	0	0	0							! HP model (ideal, Landau, Bragg-Williams)
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Mg=2											
+! C  SiT  AlT  MgM1  FeM1  MnM1  AlM1  MgM2  FeM2  MnM2  CaM2 
+1    0.5    0   1     0     0     0     1     0     0     0    ! Ideal activity expression. 1st number is multiplier. Remaining numbers are indices (power) the site fraction is raised to. For the activity to make sense, the site variables need to be (site) FRACTIONS OR multiplicity, not cations.
+1  0  0												! ASF size parameter
+-----------------------------------------------
+Ferrosilite
+-2388710	189.9	6.592				
+398.7	-4058	1290100	0	0	-0.006579	0
+0.0000326	1010000	4.08	418						! V terms. 4th value is theta.
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Fe=2
+! C  SiT  AlT  MgM1  FeM1  MnM1  AlM1  MgM2  FeM2  MnM2  CaM2 
+1    0.5    0   0     1     0     0     0     1     0     0    ! Ideal activity expression. 1st number is multiplier. Remaining numbers are indices (power) the site fraction is raised to. For the activity to make sense, the site variables need to be (site) FRACTIONS OR multiplicity, not cations.
+1  0  0												! ASF size parameter
+-----------------------------------------------
+FeMg-opx		! thermo calculated as 0.5 en + 0.5 fs, with a further -6600 DQF adjustment of H.
+-2739465	161.2	6.427		! no dqf
+! -2746065	161.2	6.427				
+377.45	-3621.65	346600	0	0	-0.0047845	0
+0.00002765	1034500	6.365	471.4539007		! summative theta = 479K.
+0	0	0	0	0	0	0
+! DQF -6600  0  0
+1	-6600.	0	0			! DQF
+Si=2 Mg=1 Fe=1
+! C  SiT  AlT  MgM1  FeM1  MnM1  AlM1  MgM2  FeM2  MnM2  CaM2 
+1    0.5   0    1     0     0     0     0     1     0     0    ! Ideal activity expression. 1st number is multiplier. Remaining numbers are indices (power) the site fraction is raised to. For the activity to make sense, the site variables need to be (site) FRACTIONS OR multiplicity, not cations.
+1  0  0											! ASF size parameter
+-----------------------------------------------
+Mg-TschermaksOpx
+-3196670	131	6.05				
+371.4	-3547.1	-398400	0	0	-0.004082	0
+0.0000217	1028000	8.55	544.3193449							! V terms. 4th value is theta.
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2 Mg=1
+! C        SiT  AlT  MgM1  FeM1  MnM1  AlM1  MgM2  FeM2  MnM2  CaM2 
+1.41421   0.25  0.25  0     0     0     1     1     0     0     0    ! Ideal activity expression. 1st number is multiplier. Remaining numbers are indices (power) the site fraction is raised to. For the activity to make sense, the site variables need to be (site) FRACTIONS OR multiplicity, not cations.
+1  0  0												! ASF size parameter
+-----------------------------------------------
+Mn-opx			! which is made of twice pxmn end-member
+! make?
+-2646320	198.6	6.944				! no dqf
+! -2639640	198.6	6.944							! 2 x pxmn data, with +6680 J added to H (original was -2646300 J)
+276.8	-1077.8	-3872000	0	0	0.008176	0	! 2 x pxmn data
+! 0.000056	1680000	8	404.4106464 					! 2 x pxmn data, except theta (4th value) stays unchanged.
+0.000028	840000	4	404.4106464						! Original EOS values of pxmn.
+0	0	0	0	0	0	0
+! DQF 6680  0  0
+1	6680.	0	0			! DQF
+Si=2 Mn=2
+! C  SiT  AlT  MgM1  FeM1  MnM1  AlM1  MgM2  FeM2  MnM2  CaM2 
+1    0.5    0   0     0     1     0     0     0     1     0    ! Ideal activity expression. 1st number is multiplier. Remaining numbers are indices (power) the site fraction is raised to. For the activity to make sense, the site variables need to be (site) FRACTIONS OR multiplicity, not cations.
+1  0  0										! ASF size parameter
+-----------------------------------------------
+Diopside_o		! ordered (made of diopside)
+! make?
+-3201850	142.9	6.619		! no dqf
+! -3201950	142.689	6.624			! DQF = -100 + 0.211 T + 0.005 P (in J). i.e. 0.211 subtracted from S
+314.5	-2020.1	-2745900	0	0	0.000041	0
+0.0000273	1192000	5.19	513.0728413		! not sure if theta should change given there's a DQF on S
+0	0	0	0	0	0	0
+! DQF -100  -0.211  0.005
+1	-100	-0.211	0.005			! DQF
+Si=2 Mg=1 Ca=1
+! C  SiT  AlT  MgM1  FeM1  MnM1  AlM1  MgM2  FeM2  MnM2  CaM2 
+1    0.5    0   1     0     0     0     0     0     0     1    ! Ideal activity expression. 1st number is multiplier. Remaining numbers are indices (power) the site fraction is raised to. For the activity to make sense, the site variables need to be (site) FRACTIONS OR multiplicity, not cations.
+1.2  0  0										! ASF size parameter
+-----------------------------------------------
+! Cations on sites to component definitions
+     En   Fs  FeMg  MgTs MnOpx  Dio
+     2    2    2     1     2    2    SiT
+     0    0    0     1     0    0    AlT
+     1    0    1     0     0    1    MgM1
+     0    1    0     0     0    0    FeM1
+     0    0    0     0     1    0    MnM1
+     0    0    0     1     0    0    AlM1
+     1    0    0     1     0    0    MgM2
+     0    1    1     0     0    0    FeM2
+     0    0    0     0     1    0    MnM2
+     0    0    0     0     0    1    CaM2
+------------------------------------------------
+15               ! number of non-ideal terms (WH & WS get multiplied by 1000 from THERMOCALC; Wv stays as it is in THERMOCALC)
+! WH   WS   Wv     ID1  ID2 
+7000	0	0		1	2	! W(en,fs)
+4000	0	0		1	3	! W(en,fm)
+13000	0	-0.15	1	4	! W(en,mgts)
+5000	0	0		1	5	! W(en,mnopx)
+32200	0	0.12	1	6	! W(en,odi)
+4000	0	0		2	3	! W(fs,fm)
+13000	0	-0.15	2	4	! W(fs,mgts)
+4200	0	0		2	5	! W(fs,mnopx)
+25540	0	0.084	2	6	! W(fs,odi)
+17000	0	-0.15	3	4	! W(fm,mgts)
+5100	0	0		3	5	! W(fm,mnopx)
+22540	0	0.084	3	6	! W(fm,odi)
+12000	0	-0.15	4	5	! W(mgts,mnopx)
+75400	0	-0.94	4	6	! W(mgts,odi)
+24540	0	0.084	5	6	! W(mnopx,odi)
+-----------------------------------------------             
+0	! Number of new variables   
+******************************************************************************************************************                                                                                                                                                                                                                            
+!	This is the so-called "augite" model. Not suitable for coexisting clinopyroxenes
+2054            Clinopyroxene                 !Green et al 2016 
+!8               0                9              2               12              4                                                                                                                                                               
+8               203               12               0                                                                                                                 
+C     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2   
+0      1       2       3        4      5       6       7       8       9       10      11     12
+       1       1       1        1      1       1       1       1       1       1       1      1
+----------------------------------
+cenh	                enstatite	
+!Clinoenstatite (cen) -3091.12 0.66 132.00 6.264       0.3060 -0.3793 -3041.7 -1.8521          2.11 1059.0 8.65 -0.0082  This is cen from HP11 but Green et al didn't use it
+!Enstatite (en)       -3090.23 0.66 132.50 6.262       0.3562 -0.2990 -596.9 -3.1853           2.27 1059.0 8.65 -0.0082
+!DGtrancenh = Gcenh - Gen = 3.5 - 0.002T + 0.048P kJ
+!added DQF 3500         -0002.       0.048
+-3086730	130.5	6.310				
+356.2	-3185.3	-596900	0	0	-0.00299	0
+0.0000227	1059000	  8.65	540.1726765			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Mg=2
+!c     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.     0.25       0.       0.25      0.      0.      1.      0.     0.     1.      0.      0.      0.       !alpha factors for ideal activities  OMW new
+1   0   0
+----------------------------------
+cfs	                ferosilite	
+!Ferrosilite (fs) -2388.72 0.81 189.90 6.592        0.3987 -0.6579 1290.1 -4.0580        3.26 1010.0 4.08 -0.0040
+!DGtrancfs = Gcfs - Gfs = 2.1 - 0.002T + 0.045P kJ.      (Green etal 2016)
+!added DQF  2100      -0002.      0.045
+-2386620	187.9	6.637				
+398.7	-4058	1290100	0	0	-0.006579	0
+0.0000326	1010000	4.08	418.2461659				
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Fe=2
+!c     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.      0.25      0.       0.25      0.     0.      0.      1.      0.     0.      1.      0.      0.        !alpha factors for ideal activities   OMW new
+1   0   0
+----------------------------------
+Diopside
+!Diopside (di) -3201.69 0.62 142.90 6.619        0.3145 0.0041 -2745.9 -2.0201           2.73 1192.0 5.19 -0.0044
+! Apparently there is no DQF term for diopside
+-3201690	142.9	6.619				
+314.5	-2020.1	-2745900	0	0	0.000041	0
+0.0000273	1192000	5.19	513.0728413			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Mg=1 Ca=1
+!c     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.     0.25       0.       0.25      0.     0.      1.      0.      0.     0.      0.      1.      0.        !alpha factors for ideal activities  OMW expanded from original
+1.2     0     0
+----------------------------------
+Jadeite                            !added DQF  2000  0   0
+!Jadeite (jd) -3025.26 1.67 133.50 6.040          0.3194 0.3616 -1173.9 -2.4695         2.10 1281.0 3.81 -0.0030
+!  DQF = 2kJ (Green et al 2016)
+-3023260	133.5	6.04				
+319.4	-2469.5	-1173900	0	0	0.003616	0
+0.000021	1281000	3.81	537.4431531			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=1 Na=1
+!c     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.     0.25       0.       0.25      0.     1.      0.       0.      0.     0.      0.      0.     1.         !alpha factors for ideal activities   OMW expanded from original
+1.2  0   0
+----------------------------------
+Acmite                        !added DQF  -5000  0   0
+!Acmite (acm) -2583.50 2.43 170.60 6.459        0.3071 1.6758 -1685.5 -2.1258        2.11 1060.0 4.08 -0.0038
+!  DQF = -5kJ (Green et al 2016)
+-2588500	170.6	6.459				
+307.1	-2125.8	-1685500	0	0	0.016758	0
+0.0000211	1060000	4.08	452.5957447			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Fe3=1 Na=1
+!c     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.     0.25       0.       0.25      0.     0.      0.       0.      1.     0.      0.     0.      1.         !alpha factors for ideal activities   OMW expanded from original
+1.2     0     0
+----------------------------------
+Cats                     !same as ocats in tc-6axNCKFMASHTOm40
+!Ca-Tschermak pyroxene (cats) -3310.14 0.80 135.00 6.356        0.3476 -0.6974 -1781.6 -2.7575           2.08   1192.0 5.19 -0.0044 2
+-3310140	135	6.356				
+347.6	-2757.5	-1781600	0	0	-0.006974	0
+0.0000208	1192000	5.19	533.4002006			
+2	3800	0.01	3800	0.01	1	0.25
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2 Ca=1
+!c     SiT1     AlT1     SiT2    AlT2   AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.     0.25       0.       0.      0.25      1.     0.      0.      0.     0.      0.      1.       0.        !alpha factors for ideal activities   OMW expanded from original
+1.9     0     0
+----------------------------------
+dCats                      !same as dcats in tc-6axNCKFMASHTOm40.    added DQF 3800  -0002.8816  0.01    Makeordered? not sure what command that is in TC
+-3306310	132.1184	6.366			!Odd S DQF term, more digits than ds62	
+347.6	-2757.5	-1781600	0	0	-0.006974	0
+0.0000208	1192000 	5.19	533.4002006			
+2	3800	0.01	3800	0.01	1	0.25
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=2 Ca=1
+!c             SiT1     AlT1     SiT2        AlT2    AlM1    MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.4142136     0.125     0.125      0.125    0.125    1.     0.      0.      0.     0.      0.      1.      0.      !alpha factors for ideal activities  Does disordering on T sites add
+1.9     0     0
+-----------------------------------------------
+OrdCpx                  ordered-cpx  
+!Fe-Mg  Make Mineral 1/2 cfs + 1/2 cenh and     added DQF -1600     -0002.0      0.0465
+!-2741065	159.2	6.892				! this is OMW's values -- not sure where they come from
+-2738275	157.2	6.52
+377.45	-3621.65	346600	0	0	-0.0047845	0
+0.00002765	1034500 	6.365	479.2094212			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Mg=1 Fe=1
+!c     SiT1     AlT1     SiT2    AlT2   AlM1      MgM1    FeM1    Fe3M1  MgM2    FeM2    CaM2    NaM2
+1.     0.25       0.       0.      0.25      0.     1.      0.      0.     0.      1.0     0.      0.      !alpha factors for ideal activities
+1   0   0
+-----------------------------------------------
+!Cations on sites to component definitions
+    Cenh    Cfs      Diop   Jade     acm     Cats       dCats    OrdCpx
+    1        1       1       1         1        1         0.5       1     SiT1
+    0        0       0       0         0        0         0.5       0     AlT1
+    1        1       1       1         1        0         0.5       1     SiT2
+    0        0       0       0         0        1         0.5       0     AlT2
+    0        0       0       1         0        1          1        0     AlM1
+    1        0       1       0         0        0          0        1     MgM1
+    0        1       0       0         0        0          0        0     FeM1
+    0        0       0       0         1        0          0        0     Fe3M1
+    1        0       0       0         0        0          0        0     MgM2
+    0        1       0       0         0        0          0        1     FeM2
+    0        0       1       0         0        1          1        0     CaM2
+    0        0       0       1         1        0          0        0     NaM2
+-------------------------------------------------
+28
+!  WH    WS   Wv         ID1  ID2 
+2300        0         0   1   2   !W(cenh,cfs)
+29800       0      -0.03  1   3   !W(cenh,di)
+50000       0         0   1   4   !W(cenh,jd) 
+62000       0         0   1   5   !W(cenh,acm)    
+45700       0      -0.29  1   6   !W(cenh,ocats) 
+45700       0      -0.29  1   7   !W(cenh,dcats)
+4000        0         0   1   8   !W(cenh,fmc) 
+25800       0      -0.03  2   3   !W(di,cfs)
+60000       0         0   2   4   !W(cfs,jd)
+58000       0         0   2   5   !W(cfs,acm)
+48000       0         0   2   6   !W(cfs,ocats)
+48000       0         0   2   7   !W(cfs,dcats)    
+3500        0         0   2   8   !W(cfs,fmc)     
+26000       0         0   3   4   !W(di,jd) 
+21000       0         0   3   5   !W(di,acm) 
+12300       0      -0.01  3   6   !W(di,ocats)  
+12300       0      -0.01  3   7   !W(di,dcats)  
+20600       0      -0.03  3   8   !W(di,fmc)                 
+5000        0         0   4   5   !W(jd,acm)        
+40000       0         0   4   6   !W(jd,ocats)  
+40000       0         0   4   7   !W(jd,dcats)               
+40000       0         0   4   8   !W(jd,fmc) 
+35000       0         0   5   6   !W(acm,ocats)              
+35000       0         0   5   7   !W(acm,dcats)              
+60000       0         0   5   8   !W(acm,fmc)                
+3800        0       0.01  6   7   !W(ocats,dcats)             
+50000       0         0   6   8   !W(ocats,fmc)              
+50000       0         0   7   8   !W(dcats,fmc)      
+------------------------------------------------- 
+0   !List of New variables
+******************************************************************************************************************                                                                                                                                                                                                                            
+2154            Clinopyroxene             !OMW Green et al 2007 and 2016 metabasite Omphacite Ordering
+7               203               12               0                                                                                                                 
+C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+0      1       2        3        4      5       6       7       8       9       10      11     12
+       .5      .5      .5       .5     .5      .5      .5      .5      .5       .5      .5     .5       
+----------------------------------
+Diopside                         !no DQF
+-3201850	142.9	6.619				
+314.5	-2020.1	-2745900	0	0	0.000041	0
+0.0000273	1192000	5.19	513.0728413			
+0	0	0	0	0	0	0
+0	0	0	0
+Si=2 Mg=1 Ca=1
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.5      0.       0.      0.     0.5      0.      0.       0.   0.       0.5      0.      0.5        !alpha factors for ideal activities
+1  0   0
+----------------------------------
+Jadeite                         !no DQF
+-3025270	133.5	6.04				
+319.4	-2469.5	-1173900	0	0	0.003616	0
+0.000021	1281000	3.81	537.4431531			
+0	0	0	0	0	0	0
+0	0	0	0
+Si=2 Al=1 Na=1
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.       0.       0.      0.5     0.       0.      0.    0.5     0.5       0.       0.5      0.         !alpha factors for ideal activities
+1  0   0
+----------------------------------
+Hedenbergite                    !no DQF
+-2842060	175	6.795				
+340.2	-2646.7	-1047800	0	0	0.000812	0
+0.0000238	1192000	3.97	444.2773601			
+0	0	0	0	0	0	0
+0	0	0	0
+Si=2 Fe=1 Ca=1
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.       0.5       0.      0.     0.       0.5      0.       0.   0.       0.5       0.      0.5         !alpha factors for ideal activities
+1  0   0
+----------------------------------
+Acmite                               
+-2583430	170.6	6.459				
+!added DQF   -7000   0    0			Based on Green etal 2016     OMW 04/01/2021 Fixed DQF
+307.1	-2125.8	-1685500	0	0	0.016758	0
+0.0000211	1060000	4.08	452.5957447			
+0	0	0	0	0	0	0
+1	-7000	0	0
+Si=2 Fe3=1 Na=1
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.       0.       0.5      0.     0.       0.      0.5       0.   0.5       0.       0.5      0.         !alpha factors for ideal activities
+1  0   0
+----------------------------------
+Omphacite                     ! 1/2 jad  1/2 diopside  added DQF -2900  0  0    OMW 04/01/2021  Fixed DQF
+-3113560	138.2	6.3295			
+316.95	-2244.8	-1959900	0	0	0.0018285     0
+0.00002415	1236500	4.5	525.2579972		
+0	0	0	0	0	0	0
+1	-2900	0	0
+Si=2 Mg=0.5 Ca=0.5 Al=0.5 Na=0.5
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.5       0.       0.      0.     0.       0.      0.    0.5      0.       0.5       0.5      0.         !alpha factors for ideal activities
+1  0   0
+----------------------------------
+cfm                              !di-hed  !cfm   !   1/2 di  1/2 hed   added DQF   -1500  0  0    OMW 04/01/2021  Fixed DQF
+-3021955	158.95	6.707				
+327.35	-2333.4	-1896850	0	0	0.0004265	0
+0.00002555	1192000	4.58	478.6751007			
+0	0	0	0	0	0	0
+1	-1500	0	0
+Si=2 Mg=0.5 Fe=0.5 Ca=1  
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.       0.5       0.      0.     0.5       0.      0.    0.      0.       0.5       0.      0.5         !alpha factors for ideal activities
+1  0   0
+----------------------------------
+jad-acm                            !jac    1/2 jd  1/2  acm  added DQF    -4500  0  0   OMW 04/01/2021  Fixed DQF
+-2804350	152.05	6.2495				
+313.25	-2297.65	-1429700	0	0	0.010187	0
+0.00002105	1170500	3.945	495.0194489			
+0	0	0	0	0	0	0
+1	-4500	0	0
+Si=2 Fe3=0.5 Al=0.5 Na=1
+!C     MgM1m	FeM1m	Fe3M1m	AlM1m	MgM1a	FeM1a	Fe3M1a	AlM1a	NaM2c	CaM2c	NaM2n	CaM2n
+1.      0.       0.       0.      0.5     0.       0.      0.5       0.   0.5       0.       0.5      0.         !alpha factors for ideal activities
+1  0   0
+!----------------------------------
+!   Site definitions from Green et al 2007
+!% OD omphacite (Q1 = Q - Qaf)
+!% 
+!%       M1m               M1a               M2c       M2n       
+!%       Mg  Fe  Fe3 Al    Mg  Fe  Fe3 Al    Na  Ca    Na  Ca    
+!% jd    0   0   0   1/2   0   0   0   1/2   1/2 0     1/2 0     
+!% di    1/2 0   0   0     1/2 0   0   0     0   1/2   0   1/2   
+!% hed   0   1/2 0   0     0   1/2 0   0     0   1/2   0   1/2   
+!% acm   0   0   1/2 0     0   0   1/2 0     1/2 0     1/2 0     
+!% om    1/2 0   0   0     0   0   0   1/2   0   1/2   1/2 0     
+!% cfm   0   1/2 0   0     1/2 0   0   0     0   1/2   0   1/2   
+!% jac   0   0   0   1/2   0   0   1/2 0     1/2 0     1/2 0     
+!
+!% om1   1/4 0   0   1/4   1/4 0    0  1/4   0   1/2    0  1/2 (only for the subsystem)
+!
+!
+-----------------------------------------------
+!Cations on sites to component definitions
+ Diop     Jade     Hedn    acm      omph     cfm     jac    
+ 0.5      0         0       0        0.5      0      0     MgM1m
+ 0        0         0.5     0        0        0.5    0     FeM1m
+ 0        0         0       0.5      0        0      0     Fe3M1m
+ 0	  0.5       0       0        0	      0      0.5   AlM1m
+ 0.5      0         0       0        0        0.5    0     MgM1a
+ 0        0         0.5     0        0        0      0     FeM1a
+ 0        0         0       0.5      0        0      0.5   Fe3M1a
+ 0        0.5       0       0        0.5      0      0     AlM1a
+ 0        0.5       0       0.5      0        0      0.5   NaM2c
+ 0.5      0         0.5     0        0.5      0.5    0     CaM2c
+ 0        0.5       0       0.5      0.5      0      0.5   NaM2n
+ 0.5      0         0.5     0        0        0.5    0     CaM2n
+-------------------------------------------------
+21
+!  WH    WS   Wv     ID1  ID2 
+!  These values are from Green et al 2007
+26000  0  0   1  2  !W(di,jd)
+24000  0  0   2  3  !W(jd,hed)        
+ 5000  0  0   2  4  !W(jd,acm)       
+15500  0  0   2  5  !W(jd,om)
+25200  0  0   2  6  !W(jd,cfm)    
+ 3000  0  0   2  7  !W(jd,jac)      
+ 4000  0  0   1  3  !W(di,hed)       
+!15000  0  0   1  4  !W(di,acm)
+ 21000  0  0   1  4  !W(di,acm)		Diener&Powell 2012
+15750  0  0   1  5  !W(di,om)    
+ 2000  0  0   1  6  !W(di,cfm)       
+!21050  0  0   1  7  !W(di,jac)       
+ 24650  0  0   1  7  !W(di,jac)		Diener&Powell 2012       
+!14000  0  0   3  4  !W(hed,acm)   
+ 20800  0  0   3  4  !W(hed,acm)	Diener&Powell 2012    
+17200  0  0   3  5  !W(hed,om)    
+ 2000  0  0   3  6  !W(hed,cfm)    
+!20100  0  0   3  7  !W(hed,jac)    
+ 24600  0  0   3  7  !W(hed,jac)	Diener&Powell 2012     
+!12800  0  0   4  5  !W(acm,om)    
+ 16400  0  0   4  5  !W(acm,om)		Diener&Powell 2012     
+!15500  0  0   4  6  !W(acm,cfm)   
+ 22200  0  0   4  6  !W(acm,cfm)	Diener&Powell 2012    
+ 3000  0  0   4  7  !W(acm,jac)      
+18450  0  0   5  6  !W(om,cfm)   
+!19300  0  0   5  7  !W(om,jac)    
+ 19500  0  0   5  7  !W(om,jac)		Diener&Powell 2012     
+!21050  0  0   6  7  !W(cfm,jac)  
+ 24550  0  0   6  7  !W(cfm,jac)	Diener&Powell 2012   
+------------------------------------------------- 
+0   List of New variables
+!******************************************************************************************************************        
+!    Green et al 2016 Minerals for blueschists & eclogites
+******************************************************************************************************************                                                                                                                                                                                                                              
+2058            Amphibole_Ca-Na          !The entries have not been checked for DQFs -- see appendix of Green paper
+!11               0               9               2               19               1                                                                                                                 
+11               203               19               0                                                                                                                 
+C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+0       1        2        3      4     5      6      7      8      9      10      11     12    13     14    15    16      17    18     19
+        4        4        4      2     2      2      2      2      3      3       2      2      2      2       1      1    1     2      2
+! Note that T1 and T2 are reversed from the designation in SPaC (i.e. Al goes into T1 here)
+-----------------------------------------------
+Tremolite	 
+-12304870	553	27.27				
+1260.2	-8237.6	-11455000	0	0	0.00383	0
+0.0000261	762000	4.1	533.7266229				
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=5 Ca=2 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.        0.      1.       0.     0.     0.   2.    0.       0.     3.      0.     0     0      2.     0.      0.    0.     1.     2.    0. Alpha factors
+1   0   0
+-----------------------------------------------
+Tschermakite			!added DQF 10000   0   0   OMW 04/01/2021  Fixed DQF
+-12555270	533	26.8					
+1244.8	-8112.1	-11965000	0	0	0.024348	0	
+0.0000266	760000	4.1	547.1193416			
+0	0	0	0	0	0	0
+1	-10000	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=6 Al=4 Mg=3 Ca=2 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+2.       0.5      0.       0.5     2.    0.    0.    0.      0.      3.     0.      0.    0.     2.     0.      0.    0.     1.     2.     0.   !Alpha factors
+1.5         0         0
+-----------------------------------------------
+Pargasite	    		!added DQF  -10000   0   0   OMW 04/01/2021  Fixed DQF
+-12664730	635	27.19					
+1280.2	-8065.8	-12359500	0	0	0.022997	0	
+0.000028	912000	4.09	493.3427574				
+0	0	0	0	0	0	0
+1	-10000	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=6 Al=3 Mg=4 Ca=2 Na=1 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+8.       0.      0.5       0.5     1.    0.    1.    0.      0.      3.     0.      0.    0.     2.     0.      1.    0.     0.    2.     0.  !Alpha factors
+1.7         0         0
+-----------------------------------------------
+Glaucophane	    		!added DQF   -3000  0   0   OMW 04/01/2021  Fixed DQF
+-11960240	530	25.98				
+1717.5	-19272	7075000	0	0	-0.12107	0
+0.0000149	883000	4.09	549.186439			
+0	0	0	0	0	0	0
+1	-3000	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Al=2 Mg=3 Na=2 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.        0.      1.       0.     2.    0.    0.    0.      0.      3.     0.      0.    0.      0.     2.      0.    0.     1.    2.     0.   !Alpha factors
+0.8         0         0
+-----------------------------------------------
+cumm		   
+-12064690	538	26.33				
+1277.3	-9074.7	-9704600	0	0	0.025825	0
+0.0000252	700000	4.11	543.7085432			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=7 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.       0.      1.        0.     0.    0.    2.    0.      0.      3.     0.     2.    0.      0.     0.      0.    0.     1.    2.     0.    !Alpha factors
+1  0  0
+-----------------------------------------------
+grun				!added DQF    -3000    0    0   OMW 04/01/2021  Fixed DQF
+-9607150	735	27.84				
+1383.1	-11257.6	-4224700	0	0	0.030669	0
+0.0000274	648000	4.12	436.4950352			
+0	0	0	0	0	0	0
+1	-3000	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Fe=7 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.       0.      1.       0.     0.    0.    0.    2.      0.      0.     3.     0.    2.      0.     0.      0.    0.     1.    2.     0.    !Alpha factors
+1  0  0
+-----------------------------------------------
+aAmph                                     ! 3/7 cummingtonite  MgM13   Added DQF  -11200  0   0   OMW 04/01/2021  Fixed DQF
+-10660381.43	650.5714286	27.19285714				
+1337.757143	-10322.07143	-6573228.571	0	0	0.028593	0
+2.64571E-05	670285.7143	4.115714286	482.4436815			
+0	0	0	0	0	0	0
+1	-11200	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=3 Fe=4 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.       0.      1.       0.     0.    0.    0.    2.      0.      3.     0.     0.    2.      0.     0.      0.    0.     1.    2.     0.    !Alpha factors
+1  0  0
+-----------------------------------------------
+bAmph                                      !2/7 cummingtonite MgM2     added DQF   -13800   0   0
+-10309304.29	678.7142857	27.40857143				
+1352.871429	-10633.91429	-5790385.714	0	0	0.029285	0
+2.67714E-05	662857.1429	4.117142857	467.1274661			
+0	0	0	0	0	0	0
+1	-13800	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=8 Mg=2 Fe=5 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.       0.      1.       0.     0.    0.    2.    0.      0.      0.     3.     0.    2.      0.     0.      0.    0.     1.    2.     0.    !Alpha factors
+1  0  0
+-----------------------------------------------
+Mg-riebeckite						
+-12834150	468.6	25.311				
+1704.9	-19285.7	6250900	0	0	-0.12107	0
+0.0000083	1015000	3.94	625.6257158			
+0	0	0	0	0	0	0
+0	0	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV		
+Si=8 Fe3=2 Mg=3 Na=2 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+1.       0.      1.       0.     0.    2.    0.    0.      0.      3.     0.      0.     0.      0.    2.     0.    0.      1.    2.     0.  !Alpha factors
+0.8         0         0
+-----------------------------------------------
+kprg  				K-pargasite			!Added DQF    -7060  20   0	 OMW 04/01/2021  Fixed DQF
+-12708400	650	28.062				
+1233.6	-6894	-14746500	0	0	0.034737	0
+0.0000217	887000	1.73	474.3202901			
+0	0	0	0	0	0	0
+1	-7060	20	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=6 Al=3 Mg=4 Ca=2 K=1 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+8.       0.      0.5       0.5     1.    0.    1.    0.      0.      3.     0.     0.     0.     2.    0.      0.    1.     0.    2.    0. !Alpha factors   !needs updating  
+1.7         0         0
+-----------------------------------------------
+tts  				ti-tschermakite         		!Added DQF   95000     0   0   OMW 04/01/2021  Fixed DQF
+-12444310	565	26.992				
+1135.4	-5877.5	-13133800	0	0	0.01273	0
+0	640000	4.5	49.1121859			
+0	0	0	0	0	0	0
+1	95000	0	0					!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=6 Al=2 Ti=2 Mg=3 Ca=2 H2O=1
+!C       SiT2    SiT1     AlT1   AlM2  Fe3M2 MgM2  FeM2    TiM2    MgM13  FeM13  MgM4  FeM4    CaM4   NaM4    NaA   KA     VA    OHV    OV
+2.       0.      0.5       0.5     0.    0.    0.    0.      2.      3.     0.     0.     0.      2.    0.      0.    0.     1.    0.     2.  !Alpha factors
+1.5         0         0
+-----------------------------------------------
+!Cations on sites to component definitions
+   Trem    Tsch   parg   gl   cumm  grun  a     b    MgRb  Kparg  Tts
+     4      4     4      4    4     4     4     4     4     4     4      SiT2
+     4      2     2      4    4     4     4     4     4     2     2      SiT1
+     0      2     2      0    0     0     0     0     0     2     2      AlT2
+     0      2     1      2    0     0     0     0     0     1     0      AlM2
+     0      0     0      0    0     0     0     0     2     0     0      Fe3M2
+     2      0     1      0    2     0     0     2     0     1     0      MgM2
+     0      0     0      0    0     2     2     0     0     0     0      FeM2
+     0      0     0      0    0     0     0     0     0     0     2      TiT2
+     3      3     3      3    3     0     3     0     3     3     3      MgM13
+     0      0     0      0    0     3     0     3     0     0     0      FeM13
+     0      0     0      0    2     0     0     0     0     0     0      MgM4
+     0      0     0      0    0     2     2     2     0     0     0      FeM4
+     2      2     2      0    0     0     0     0     0     2     2      CaM4
+     0      0     0      2    0     0     0     0     2     0     0      NaM4
+     0      0     1      0    0     0     0     0     0     0     0      NaA
+     0      0     0      0    0     0     0     0     0     1     0      KA
+     1      1     0      1    1     1     1     1     1     0     1      VA
+     2      2     2      2    2     2     2     2     2     2     0      OHV
+     0      0     0      0    0     0     0     0     0     0     2      OV
+-----------------------------------------------     
+55  !nonideal terms
+!  WH           WS        Wv   ID1 ID2 
+20000           0         0    1   2 !W(tr,ts)                  
+25000           0         0    1   3 !W(tr,parg)                
+65000           0         0    1   4 !W(tr,gl)                  
+45000           0         0    1   5 !W(tr,cumm)                
+75000           0         0    1   6 !W(tr,grun)                
+57000           0         0    1   7 !W(tr,a)                   
+63000           0         0    1   8 !W(tr,b)                   
+52000           0         0    1   9 !W(tr,mrb)                 
+30000           0         0    1  10 !W(tr,kprg)                
+85000           0         0    1  11 !W(tr,tts)                 
+-40000          0         0    2   3 !W(ts,parg)               
+25000           0         0    2   4 !W(ts,gl)                  
+70000           0         0    2   5 !W(ts,cumm)                
+80000           0         0    2   6 !W(ts,grun)                
+70000           0         0    2   7 !W(ts,a)                   
+72500           0         0    2   8 !W(ts,b)                 
+20000           0         0    2   9 !W(ts,mrb)                 
+-40000          0         0    2  10 !W(ts,kprg)               
+35000	        0         0    2  11 !W(ts,tts)                 
+50000           0         0    3   4 !W(gl,parg)                
+90000           0         0    3   5 !W(parg,cumm)              
+106700          0         0    3   6 !W(parg,grun)           
+94800           0         0    3   7 !W(parg,a)               
+94800           0         0    3   8 !W(parg,b)               
+40000           0         0    3   9 !W(parg,mrb)               
+8000 	        0         0    3  10 !W(parg,kprg)               
+15000           0         0    3  11 !W(parg,tts)               
+100000          0         0    4   5 !W(gl,cumm)               
+113500          0         0    4   6 !W(gl,grun)             
+100000          0         0    4   7 !W(gl,a)                  
+111200          0         0    4   8 !W(gl,b)                
+0               0         0    4   9 !W(gl,mrb)                  
+54000           0         0    4  10 !W(gl,kprg)                
+75000           0         0    4  11 !W(gl,tts)                 
+33000           0         0    5   6 !W(cumm,grun)              
+18000           0         0    5   7 !W(cumm,a)                 
+23000           0         0    5   8 !W(cumm,b)                 
+80000           0         0    5   9 !W(cumm,mrb)               
+87000           0         0    5  10 !W(cumm,kprg)              
+100000          0         0    5  11 !W(cumm,tts)              
+12000           0         0    6   7 !W(grun,a)                 
+8000            0         0    6   8 !W(grun,b)                  
+91000           0         0    6   9 !W(grun,mrb)               
+96000           0         0    6  10 !W(grun,kprg)              
+65000           0         0    6  11 !W(grun,tts)               
+20000           0         0    7   8 !W(a,b)                    
+80000           0         0    7   9 !W(a,mrb)                  
+94000           0         0    7  10 !W(a,kprg)                 
+95000           0         0    7  11 !W(a,tts)                  
+90000           0         0    8   9 !W(b,mrb)                  
+94000           0         0    8  10 !W(b,kprg)                 
+95000           0         0    8  11 !W(b,tts)                  
+50000           0         0    9  10 !W(mrb,kprg)               
+50000           0         0    9  11 !W(mrb,tts)                
+35000           0         0   10  11 !W(kprg,tts)               
+-------------------------------------------------     
+1 	! List of new variables
+Glaucophane
+!C   Trem    Tsch   parg   gl   cumm  grun  a     b    MgRb  Kparg  Tts
+0	0     0      0      1    0     0    0     0     0      0     0
+1       0     0      0      0    0     0    0     0     0      0     0
+******************************************************************************************************************                                                                                                                                                                                                                              
+2093            PlagC_binary		! Plc, Ca-Na (binary) only, no K; DS62
+2               203               4               0                                                                                                                
+C        Si      Al     Na     Ca 
+0        1        2     3       4
+         4        4     1       1
+-----------------------------------------------
+Albite_high						! Used Hopo high albite from ternary feldspar model.
+-3921480	224.3	10.105						!  original value = -3921480 J. 
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000241	541000	5.91	448.892929					
+0 	0	0	0	0	0	0
+! 2   14000   0.0420   13000   0.0420   3   0.9   ! This applies only for ab, not abh.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+1.   0.   0.   1.   0.0
+0.643  0  0
+-----------------------------------------------
+AnorthiteC                                   	
+!-4232690	200.5	10.079						! These are the values in HP11_DS62_DQF.dat
+!-4225660	195.84	10.079						! tc-6axmn.txt file has DQF   7.03  -0.00466   0 for anorthite (4.66 subtracted off S)
+-4225660	205.16	10.079						! DQF   7.03  -0.00466   0  (i.e. 4.66 added to S)
+370.5	-1960.6	-4339100	0	0	0.01001	0   ! Cp terms
+0.0000141	860000	4.09	486.4823024			! V terms
+2	42010	0.1	42000.	0.1 	1	2           ! HP model (ideal, Landau, Bragg-Williams)
+! DQF 7030  4.66  0
+1	7030.	4.66	0			! DQF
+Si=2 Al=2 Ca=1									! Composition
+1.   0.   0.   0.   1.0							! Alpha factors for ideal activity. For the activity to make sense, the site variables need to be FRACTIONS, not cations.
+1.  0  0										! ASF Size parameter   (can be  1   0   0   but NOT   0   0   0)
+-----------------------------------------------
+! Cations on sites to component definitions
+     Abh     AnC
+     3        2      Si
+     1        2      Al
+     1        0      Na
+     0        1      Ca
+-----------------------------------------------     
+ 1               number of non-ideal terms
+!  WH    WS   Wv     ID1  ID2 
+ 3100   0     0      1   2 		!W(abh,an) 
+-----------------------------------------------             
+0	! Number of new variables 
+******************************************************************************************************************                                                                                                                                                                                                                            
+2091            PlagC_ternary			! DS62
+3               203               5               0                                                                                                                
+C        Si      Al     Na     Ca     K
+0        1        2     3       4     5
+         4        4     1       1     1
+-----------------------------------------------
+Albite_high						! Used Hopo high albite from ternary feldspar model.
+-3921480	224.3	10.105						!  original value = -3921480 J. 
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000241	541000	5.91	448.892929					
+0 	0	0	0	0	0	0
+! 2   14000   0.0420   13000   0.0420   3   0.9   ! This applies only for ab, not abh.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+1.   0.   0.   1.   0.0   0
+0.643  0  0
+-----------------------------------------------
+AnorthiteC                             ! for C type plag (as opposed to I)	
+-4232690	200.5	10.079		! no dqf		! These are the values in HP11_DS62_DQF.dat
+!-4225660	195.84	10.079						! tc-6axmn.txt file has DQF   7.03  -0.00466   0 for anorthite (4.66 subtracted off S)
+! -4225660	205.16	10.079						! DQF   7.03  -0.00466   0  (i.e. 4.66 added to S)
+370.5	-1960.6	-4339100	0	0	0.01001	0
+0.0000141	860000	4.09	486.4823024			
+2	42010	0.1	42000.	0.1 	1	2
+! DQF 7030  4.66  0
+1	7030.	4.66	0			! DQF
+Si=2 Al=2 Ca=1
+1.   0.   0.   0.   1.0   0
+1.  0  0				
+-----------------------------------------------
+Sanidine						
+-3966700	214.3	10.871					
+448.8	-3973.1	-1007300	0	0	-0.010075	0
+0.0000166	583000	4.02	463.9554392					
+2	8650.	0.0240	8500.	0.0240	3	0.8
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 K=1
+1.   0.   0.   0.   0.0   1.0
+1.0  0  0
+-----------------------------------------------
+! Cations on sites to component definitions
+    Abh      AnC     San
+     3        2      3      Si
+     1        2      1      Al
+     1        0      0      Na
+     0        1      0      Ca
+     0        0      1      K
+-----------------------------------------------     
+ 3               number of non-ideal terms
+!  WH       WS        Wv     ID1  ID2 
+ 3100       0         0       1   2 	 !W(abh,an) 
+ 25100   10.8     0.338      1   3 	 !W(san,abh)  [even though TC ax file has -10.8]
+ 40000      0        0        2   3      ! W(san,an)
+-----------------------------------------------             
+0	! Number of new variables 
+******************************************************************************************************************                                                                                                                                                                                                                            
+2096	Ksp_binary  			! Na-K (binary) only, no Ca. Adopted from DS62 (just Ca dropped) (ionic model)
+2               203               4              0                                                                                                                 
+C       Si       Al     Na      K 
+0        1        2     3       4
+         4        4     1       1
+-----------------------------------------------
+Sanidine	
+-3966700	214.3	10.871						! H, S, V
+448.8	-3973.1	-1007300	0	0	-0.010075	0  ! Cp terms a=1000*thermocalc; b=1000*thermocalc; c=1000*thermocalc; f=d_thermocalc/100.
+0.0000166	583000	4.02	463.9554392		! Volume terms: a0, k0, kprime0, theta [Einstein temperature] (first three in Table 2a in HP11)
+2	8650.	.0240	8500.	.0240	3	0.80  ! Bragg-Williams terms: dH, dV, W, Wv, n, sf (Table 2c in HP11) 
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 K=1
+1.   0.   0.   0.   1.
+1.0    0  0
+-----------------------------------------------
+Albite_high							!Used Hopo high albite from ternary feldspar model.
+-3921480	224.3	10.105						!  original value = -3921480 J. 
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000241	541000	5.91	448.892929					
+0 	0	0	0	0	0	0
+! 2   14000   0.0420   13000   0.0420   3   0.9    ! This applies only for ab, not abh.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+1.   0.   0.   1.   0.
+0.643  0  0			! 0.643
+-----------------------------------------------
+! Cations on sites to component definitions
+     San     Abh
+     3        3      Si
+     1        1      Al
+     0        1      Na
+     1        0      K
+-----------------------------------------------
+ 1               number of non-ideal terms
+!  WH    WS   Wv     ID1  ID2 
+ 25100   10.8     0.338     1   2 		!W(san,abh) [even though TC ax file has -10.8]
+-----------------------------------------------
+0	! Number of new variables 
+*****************************************************************************************************************                                                   											
+2053            Ksp_ternary				! DS62
+3               203               5               0                                                                                                                
+C        Si      Al     K      Na     Ca
+0        1        2     3       4     5
+         4        4     1       1     1
+-----------------------------------------------
+SanK					
+-3966700	214.3	10.871					
+448.8	-3973.1	-1007300	0	0	-0.010075	0
+0.0000166	583000	4.02	463.9554392					
+2	8650	0.0240	8500	0.0240	3	0.8
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 K=1
+! C  Si   Al    K    Na     Ca
+1.   0.   0.   1.0   0.0   0.0
+1.0  0  0
+-----------------------------------------------
+AbhK						! Used Hopo high albite from ternary feldspar model.
+-3921480	224.3	10.105						!  original value = -3921480 J. 
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000241	541000	5.91	448.892929					
+0 	0	0	0	0	0	0
+! 2   14000   0.0420   13000   0.0420   3   0.9   ! This applies only for ab, not abh.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+! C  Si   Al    K    Na     Ca
+1.   0.   0.   0.   1.0   0
+0.643  0  0
+-----------------------------------------------
+AncK                               	
+-4232690	200.5	10.079		! no dqf
+! -4225690    195.84	10.079						! ds62 value of -4232720 with +7030 J added. S adjusted by -4.66.
+! -4225660	205.16	10.079						! DQF   7.03  -0.00466   0  (i.e. 4.66 added to S)
+! -4225660    195.84	10.079						! ds62 value of -4232690 J + 7030 J = -4225660 J. S adjusted by -4.66.
+370.5	-1960.6	-4339100	0	0	0.01001	0
+0.0000141	860000	4.09	486.4823024			
+2	42010	0.1	42000.	0.1 	1	2
+! DQF 7030  4.66  0
+1	7030.0	4.66	0
+Si=2 Al=2 Ca=1
+! C  Si   Al    K    Na     Ca
+1.   0.   0.   0.    0.0   1
+1.  0  0				
+-----------------------------------------------
+! Cations on sites to component definitions
+     SanK     AbhK     AncK
+     3        3      2      Si
+     1        1      2      Al
+     1        0      0      K
+     0        1      0      Na
+     0        0      1      Ca
+-----------------------------------------------     
+ 3               number of non-ideal terms
+!  WH       WS        Wv     ID1  ID2 
+ 25100   10.8     0.338      1   2 	 !W(san,abh)  [even though TC ax file has -10.8]
+ 40000      0        0        1   3      ! W(san,anC)
+ 3100       0         0       2   3 	 !W(abh,anC) 
+-----------------------------------------------             
+0	! Number of new variables 
+******************************************************************************************************************                                                                                                                                                                                                                            
+2090            PlagI1_binary		! Pli, Ca-Na (binary) only, no K; DS62
+2               203               4               0                                                                                                                
+C        Si      Al     Na     Ca 
+0        1        2     3       4
+         4        4     1       1
+-----------------------------------------------
+Ab_high_pli						! Used Hopo high albite from ternary feldspar model.
+-3921480	224.3	10.105		! no dqf
+! -3920910	220.18	10.105		! original H value = -3921480 J (of plc)		
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000241	541000	5.91	449					
+0	0	0	0	0	0	0
+! 2   14000   0.0420   13000   0.0420   3   0.9   ! This applies only for ab, not abh.
+! DQF 570  4.12  0
+1	570.	4.12	0		! DQF
+Si=3 Al=1 Na=1
+1.   0.   0.   1.   0.0
+0.643  0  0
+-----------------------------------------------
+AnorthiteI                                   	
+-4232690	200.5	10.079			! unmodified H,S,V values from HP11/ds62.
+370.5	-1960.6	-4339100	0	0	0.01001	0   ! Cp terms
+0.0000141	860000	4.09	486.4823024			! V terms
+2	42010	0.1	42000.	0.1 	1	2           ! HP model (ideal, Landau, Bragg-Williams)
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=2 Ca=1									! Composition
+1.   0.   0.   0.   1.0							! Alpha factors for ideal activity. For the activity to make sense, the site variables need to be FRACTIONS, not cations.
+1.  0  0										! ASF Size parameter   (can be  1   0   0   but NOT   0   0   0)
+-----------------------------------------------
+! Cations on sites to component definitions
+     Abhi     AnI
+     3        2      Si
+     1        2      Al
+     1        0      Na
+     0        1      Ca
+-----------------------------------------------     
+ 1               number of non-ideal terms
+!  WH    WS   Wv     ID1  ID2 
+ 15000   0     0      1   2 		!W(abh,an) 
+-----------------------------------------------             
+0	! Number of new variables 
+******************************************************************************************************************                                                                                                                                                                                                                              
+2055	AlbiteLow                   ! "low" albite, DS62         
+1               201                0              0
+Albite
+-3935480	207.4	10.067						!  
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000236	541000	5.91	475
+2   14000   0.0420   13000   0.0420   3   0.9
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+*****************************************************************************************************************                                                   											
+2056	Albite_high							! DS62 Used Hopo high albite from ternary feldspar model.
+1               201                0              0
+Albite_high
+-3921480	224.3	10.105						!  original value = -3921480 J. 
+452	-3953.6	-1275900	0	0	-0.013364	0
+0.0000241	541000	5.91	448.892929					
+0 	0	0	0	0	0	0
+!  2   14000   0.0420   13000   0.0420   3   0.9    ! This applies only for ab, not abh.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+2094	Sanidine			! DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Sanidine	
+-3966700	214.3	10.871				
+448.8	-3973.1	-1007300	0	0	-0.010075	0
+0.0000166	583000	4.02	463.9554392				
+2	8650.	.0240	8500.	.0240	3	0.80
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 K=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+2095            Clinozoisite		! DS62
+ 1               201               0               0                                                                                                                                                                                                           
+Cz		
+-6895540   301.00  13.6300
+630.9     -3731.1	-6645800.  0	0	0.013693	0
+ 0.0000233  1197000     4.07     528.58
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 Ca=2 H2O=0.5
+******************************************************************************************************************                                                                                                                                                                                                                              
+2099            Epidote			! DS62
+3               203               7               0                                                                                                                               
+C	SiT	AlM1	FeM1	AlM2	AlM3	FeM3	CaA
+0	 1	2	3	4	5	6	7
+	 3	1	1	1	1	1	2		! this follows Dollase 1971 Am Min
+-----------------------------------------------
+Cz		
+-6895540.0   301.00  13.6300			! original H value = -6895540. J
+630.9     -3731.1	-6645800.  0	0	0.013693	0
+ 0.0000233  1197000     4.07      528.5804644
+0	0	0	0	0	0	0		
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 Ca=2 H2O=0.5
+1	0	1	0	0	1	0	0         Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+-----------------------------------------------
+Ep		
+-6473830.0   315.00  13.9200				! original = -6473830. J
+613.3    -2987.7  -7160000.	0	0	0.022070  0   
+0.0000234  1340000.     4.00   512.376281   
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=2 Fe3=1 Ca=2 H2O=0.5
+1	0	1	0	0	0	1	0         Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+-----------------------------------------------
+FEp		
+-6028590  329.00  14.2100					! original = -6028590. 
+584.7     -2244.3    -7674200	0	0	0.030447	0  
+0.0000231  1513000.     4.00   497.1360585	
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1  Fe3=2 Ca=2 H2O=0.5
+1	0	0	1	0	0	1	0         Alpha factors for ideal activity
+1	0	0			 	! ASF size parameter
+-----------------------------------------------
+!	Pmt requires Mn3+ and the database doesn't have that oxidation state for Mn yet
+!Pmt		
+!-6543030.   340.00  13.8200
+!569.8    -2812.6    -5442900.	0	0	0.027790	0   
+!0.0000238  1197000.     4.07   528.		! check theta
+!0	0	0	0	0	0	0
+!Si=3 Al=2 Mn=1 Ca=2 H2O=0.5
+!1	0	0	1	0	0	1	0         Alpha factors for ideal activity
+!1	0	0			 	! ASF size parameter
+!-----------------------------------------------
+! Cations on sites to component definitions 
+Cz	Ep	FEp       ! Sites as a function of components  
+3	3	3	SiT
+1	1	0	AlM1
+0	0	1	FeM1
+1	1	1	AlM2
+1	0	0	AlM3
+0	1	1	FeM3
+2	2	2	CaA
+----------------------------------
+3               !number of non-ideal terms     
+!  WH    WS   Wv     ID1  ID2 
+1000    0    0      1     2   !W(Cz,Ep)
+3000    0    0      1     3   !W(Cz,FEp)
+1000    0    0      2     3   !W(Ep,FEp)
+----------------------------------  
+0		! List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+2098           Zoisite
+ 1               201               0               0                                                                                                                                                                                                           
+zo		
+-6896290.   298.00  13.575
+662.0	-4260.7		6006400		0	0	0.010410	0
+ 0.0000312  1044000      4.00     532.1870451
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=3 Ca=2 H2O=0.5
+****************************************************************************************************************** 
+2201	Melt
+! liquid    tc-6NCKFMASHTO.txt  ds62/HP11
+! ------
+! White, RW, Powell, R & Holland, TJB (2014) Progress relating to calculation
+! of partial melting equilibria for metapelites. Journal of Metamorphic Geology,
+! 25, 511-527. 
+! and the dqf already corrected for the endmembers!!
+8                205                8             0                  
+C      h2oL	   q4L	   abL	  kspL	   anL	sil85L	  fo2L   fa2L
+0       1      	2     	3      	4    	5     	6     	7     8 
+        1      	1     	1      	1    	1     	1     	1     1    ! should h2oL be 2?
+-----------------------------------------------
+h2oL						
+-295010	45.5	1.39	3 atoms				! Number of atoms are required for each phase component for paralleltotangent routine
+80	0	0	0	0	0	0					! Cp terms
+! 0.000521	50600	4	492.2554767			! Volume terms
+0.000521	50600	4	0				! Volume terms. No Einstein T term (v4) in TC output of thermo data.
+! 4	-0.0037	0	0	0	0	0			! HP model terms (kbar). 4 = HP11 switch in Table 2a. -0.00001 in HP11 Table 2d seems to be a typo, and it should instead be -0.0037 for dkappa0/dT.
+4	-3.7	0	0	0	0	0			! HP model terms (bar). 4 = HP11 switch in Table 2a. -0.00001 in HP11 Table 2d seems to be a typo, and it should instead be -0.0037 for dkappa0/dT.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+H2O=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     1     0    0    0     0      0      0     0                   ! Indice of '2' handled by sub-routine in Gibbs coding (Feb 2021).
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!qL						
+!-921070	16.3	2.73	3	atoms		
+!82.5	0	0	0	0	0	0
+!0	220000	9.46	895.7888827			
+!0	0	0	0	0	0	0
+!Si=1
+q4L								! tc-6axmn.txt file gives make = 4 Si 	
+! -3684280	65.2	10.92	12 atoms		! original value = -3684280 J. 
+-3684280	65.2	10.92	12 atoms		! original value = -3684280 J. 
+330	0	0	0	0	0	0			! Heat capacity terms
+0	220000	9.46	0  				! Original values for EOS. i.e. not multiplied by 4. Alpha (thermal expansion, K^-1); kappa0 (bulk modulus, bar); kappa0prime; theta (Einstein T). No Einstein T in TC output of thermo data.
+! 4	-0.035	0	0	0	0	0		! HP model terms (kbar). 4 = HP11 switch in Table 2a. -0.035 is dkappa0/dT in HP11 Table 2d.
+4	-35.0	0	0	0	0	0		! HP model terms (bar). 4 = HP11 switch in Table 2a. -0.035 is dkappa0/dT in HP11 Table 2d.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=4
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     1    0    0     0      0      0     0               ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+abL						
+-3926520	149.9	10.858	 13 atoms				! original value = -3926520 J.	
+358	0	0	0	0	0	0
+0.0000337	176000	14.35	0				! No Einstein T in TC output of thermo data.
+! 4	-0.026	0	0	0	0	0			! HP model terms (kbar). 4 = HP11 switch in Table 2a. -0.026 is dkappa0/dT in HP11 Table 2d.
+4	-26.0	0	0	0	0	0			! HP model terms (bar). 4 = HP11 switch in Table 2a. -0.026 is dkappa0/dT in HP11 Table 2d.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 Na=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     0    1    0     0      0      0     0                   ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+kspL						
+-3985190	129.2	11.431 	13 atoms				! original value = -3985190 J.
+368	0	0	0	0	0	0
+0.0000493	173000	6.84	0				! No Einstein T in TC output of thermo data.			
+! 4	-0.009	0	0	0	0	0			! HP model terms (kbar). 4 = HP11 switch in Table 2a. -0.009 is dkappa0/dT in HP11 Table 2d.
+4	-9.0	0	0	0	0	0			! HP model terms (bar). 4 = HP11 switch in Table 2a. -0.009 is dkappa0/dT in HP11 Table 2d.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=3 Al=1 K=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     0    0    1     0      0      0     0                   ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+anL						
+-4277970	29	10.014	 13 atoms			! original value = -4277970 J.
+430	0	0	0	0	0	0
+0.0000514	210000	6.38	0				! No Einstein T in TC output of thermo data.			
+! 4	-0.055	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. -0.055 is dkappa0/dT in HP11 Table 2d.
+4	-55.0	0	0	0	0	0			! HP model terms (bar). 4 = HP11 switch in Table 2a. -0.055 is dkappa0/dT in HP11 Table 2d.
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=2 Ca=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     0    0    0     1      0      0     0                   ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!silL						
+!-2593430	10	6.051	8	atoms		
+!253	0	0	0	0	0	0
+!0.0000408	220000	6.36	1383.094928			
+!0	0	0	0	0	0	0
+!Si=1 Al=2
+sil85L
+-4149488	16	9.6816				! no dqf
+! -4172488	16	9.6816	12.8 atoms		! 
+! Sil = (8/5)*silL and DQF = -23,000 J. Un-DQFd value = -4149488 J.
+! -4186288	16	9.6816	12.8 atoms		! With DQF applied prior to 'make'.
+404.8	0	0	0	0	0	0
+0.0000408	220000	6.36	0    			! Original EOS values [volume terms] (not x(8/5))
+! 4	-0.029	0	0	0	0	0			! HP model terms (kbar). 4 = HP11 switch in Table 2a. -0.029 is dkappa0/dT in HP11 Table 2d.
+4	-29.0	0	0	0	0	0			! HP model terms (bar). 4 = HP11 switch in Table 2a. -0.029 is dkappa0/dT in HP11 Table 2d.
+! DQF -23000  0  0
+1	-23000.	0	0			! DQF   (This applies to Al3.2Si1.6 -- that is, add in AFTER MAKE )
+Si=1.6 Al=3.2
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     0    0    0     0      1      0     0                   ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!foL						
+!-2237350	-62	4.312	7	atoms				! This is really odd to have a negative entropy!
+!269.4	0	0	0	0	0	0
+!0.000092	362000	10.06	-4400.236407			
+!0	0	0	0	0	0	0
+!Si=1 Mg=2
+fo2L														
+-4474700	-124	8.624				! no dqf
+! -4484700	-124	8.624	14 atoms			! make = 2*foL and DQF = -10,000 J. Un-DQFd value = -4474700 J.
+! -4494700	-124	8.624	14 atoms			! with DQF applied prior to 'make'.
+538.8	0	0	0	0	0	0
+0.000092	362000	10.06	0				! Original values for EOS (not 2x)[volume terms]		
+! 4	-0.044	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. -0.044 is dkappa0/dT in HP11 Table 2d.
+4	-44.0	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. -0.044 is dkappa0/dT in HP11 Table 2d.
+! DQF -10000  0  0
+1	-10000.	0	0				! DQF -- add in after "make"
+Si=2 Mg=4
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     0    0    0     0      0      1     0                   ! Ideal activity ^5 handled in subroutine in Gibbs coding (Feb 2021)
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!faL						
+!-1463020	96	4.677	7	atoms		
+!243.7	0	0	0	0	0	0
+!0.0001071	290000	10.42	527.7289481			
+!0	0	0	0	0	0	0
+!Si=1 Fe=2
+fa2L
+-2926040	192	9.354					! no dqf
+! -2935040	192 	8.054	14 atoms					! make = 2*faL and DQF = -9000 J - 1.3 V (to give 8.054). Original value = -2935040 J.
+487.4	0	0	0	0	0	0
+0.0001071	290000	10.42	0				! Original values for EOS (not 2x) [volume terms]	
+! 4	-0.055	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. -0.055 is dkappa0/dT in HP11 Table 2d.
+4	-55.0	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. -0.055 is dkappa0/dT in HP11 Table 2d.
+! DQF -9000  0  -1.3
+1	-9000.	0	-1.3			! DQF add in after "make"
+Si=2 Fe=4
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	fo2L   fa2L
+1     0     0    0    0     0      0      0     1                   ! Ideal activity ^5 handled in subroutine in Gibbs coding (Feb 2021)
+1	0	0							! ASF size parameters
+-----------------------------------------------
+! Cations on sites to component definitions
+h2oL q4L abL kspL anL sil85L fo2L fa2L
+1	 0	 0	 0	  0	   0	 0	  0	h2oL		! xh2o^2 handled in activity subroutine.
+0	 1	 0	 0	  0	   0	 0	  0	q4L
+0	 0	 1	 0	  0	   0	 0	  0	abL
+0	 0	 0	 1	  0	   0	 0	  0	kspL
+0	 0	 0	 0	  1	   0	 0	  0	anL
+0	 0	 0	 0	  0	   1	 0	  0	sil85L
+0	 0	 0 	 0	  0	   0	 1	  0	fo2L		! xMg^5 handled in activity subroutine. 
+0	 0	 0	 0	  0	   0	 0	  1	fa2L		! xFe^5 handled in activity subroutine.
+-----------------------------------------------
+28	Number of W terms
+!     WH    WS   Wv     ID1  ID2 
+    17000  0  -0.5    	2	1	W(qL4,h2oL)   
+    12000  0  -0.4	    2	3   W(qL4,abL)    
+    -2000  0  -0.5   	2	4	W(qL4,kspL)   
+     5000  0     0      2	5	W(qL4,anL)    
+    12000  0     0      2	6	W(qL4,silL)   
+    12000  0  -0.4    	2	7	W(qL4,foL2)    
+    14000  0     0    	2	8	W(qL4,faL2)    
+    -6000  0   3.0   	3	4	W(abL,kspL)  
+     0000  0     0      3	5	W(abL,anL)   
+    12000  0     0      3	6	W(abL,silL85)  
+    10000  0     0      3	7	W(abL,foL2)   
+     2000  0     0   	3	8	W(abL,faL2)   
+    -1500  0  -0.3   	3	1	W(abL,h2oL)  
+     0000  0  -1.0      4	5	W(kspL,anL)  
+    12000  0     0      4	6	W(kspL,silL85) 
+    12000  0     0   	4	7	W(kspL,foL2)  
+    12000  0     0   	4	8	W(kspL,faL2)  
+     9500  0  -0.3   	4	1	W(kspL,h2oL) 
+     0000  0     0      5	6	W(anL,silL85)  
+     0000  0     0    	5	7	W(anL,foL2)   
+     0000  0     0    	5	8	W(anL,faL2)   
+     7500  0   -0.5    	5	1	W(anL,h2oL)  
+    12000  0     0      6	7	W(silL85,foL)  
+    12000  0     0      6	8	W(silL85,faL)  
+    11000  0     0      6	1	W(silL85,h2oL) 
+    18000  0     0   	7	8	W(foL2,faL2)   
+    11000  0  -0.5   	7	1	W(foL2,h2oL)  
+    12000  0     0   	8	1	W(faL2,h2oL)  
+---------------------------------- 
+0	!List of new variables
+!******************************************************************************************************************                                                                                                                                                                                                                            
+!    Nothing below here has been checked out yet
+****************************************************************************************************************** 
+2202	Melt 	! with separate M site for Mg, Fe; also vacancy site ('fac'), as per HP11/ds62.
+! liquid    tc-6NCKFMASHTO.txt  ds62/HP11
+! ------
+! White, RW, Powell, R & Holland, TJB (2014) Progress relating to calculation
+! of partial melting equilibria for metapelites. Journal of Metamorphic Geology,
+! 25, 511-527. 
+! and the dqf already corrected for the endmembers!!
+8                205                10             0                  
+C      h2oL	   q4L	   abL	  kspL	   anL	sil85L	 Mg4M   Fe4M  Si2O8  v2Vfac
+0       1      	2     	3      	4    	5     	6     7      8   	9     10  
+        1      	1     	1      	1    	1     	1     1      1      1     1  ! should h2oL be 2?
+-----------------------------------------------
+h2oL						
+-295010	45.5	1.39	3 atoms				! Number of atoms are required for each phase component for paralleltotangent routine
+80	0	0	0	0	0	0					! Cp terms
+! 0.000521	50600	4	492.2554767			! Volume terms
+0.000521	50600	4	0				! Volume terms. No Debye T term (v4) in TC output of thermo data.
+4	-0.0037	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. -0.00001 in HP11 Table 2d seems to be a typo, and it should instead be -0.0037 for dkappa0/dT.
+H2O=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     1     0    0    0     0      0      0     0      0      0     ! 
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!qL						
+!-921070	16.3	2.73	3	atoms		
+!82.5	0	0	0	0	0	0
+!0	220000	9.46	895.7888827			
+!0	0	0	0	0	0	0
+!Si=1
+q4L								! tc-6axmn.txt file gives make = 4 Si 	
+! -3684280	65.2	10.92	12 atoms		! original value = -3684280 J. 
+-3684280	65.2	10.92	12 atoms		! original value = -3684280 J. 
+330	0	0	0	0	0	0			! Heat capacity terms
+! 0	880000	37.84	0  				! Volume terms. Alpha (thermal expansion, K^-1); kappa0 (bulk modulus, bar); kappa0prime; theta (Einstein T). No Einstein T in TC output of thermo data.			
+! 0	170000	20.00	0  				! Volume terms. No Debye T in TC output of thermo data.			
+0	220000	9.46	0  				! Original values for EOS.	
+! 4	-0.14	0	0	0	0	0		! HP model terms. 4 = HP11 switch in Table 2a. 4*-0.035 is dkappa0/dT in HP11 Table 2d.
+4	-0.035	0	0	0	0	0		! HP model terms. 4 = HP11 switch in Table 2a. 4*-0.035 is dkappa0/dT in HP11 Table 2d.
+Si=4
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     1    0    0     0      0      0     0      0       1      ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+abL						
+-3926520	149.9	10.858	 13 atoms				! original value = -3926520 J.	
+358	0	0	0	0	0	0
+0.0000337	176000	14.35	0				! No Debye T in TC output of thermo data.
+4	-0.026	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. -0.026 is dkappa0/dT in HP11 Table 2d.
+Si=3 Al=1 Na=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     0    1    0     0      0      0     0      0       1      ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+kspL						
+-3985190	129.2	11.431 	13 atoms				! original value = -3985190 J.
+368	0	0	0	0	0	0
+0.0000493	173000	6.84	0				! No Debye T in TC output of thermo data.			
+4	-0.009	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. -0.009 is dkappa0/dT in HP11 Table 2d.
+Si=3 Al=1 K=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     0    0    1     0      0      0     0      0      1       ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+anL						
+-4277970	29	10.014	 13 atoms			! original value = -4277970 J.
+430	0	0	0	0	0	0
+0.0000514	210000	6.38	0				! No Debye T in TC output of thermo data.			
+4	-0.055	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. -0.055 is dkappa0/dT in HP11 Table 2d.
+Si=2 Al=2 Ca=1
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     0    0    0     1      0      0     0      0      1       ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!silL						
+!-2593430	10	6.051	8	atoms		
+!253	0	0	0	0	0	0
+!0.0000408	220000	6.36	1383.094928			
+!0	0	0	0	0	0	0
+!Si=1 Al=2
+sil85L
+-4172488	16	9.6816	12.8 atoms		! Make = (8/5)*silL and DQF = -23,000 J. Un-DQFd value = -4149488 J.
+404.8	0	0	0	0	0	0
+! 0.00006528	352000	10.176	0    			! No Debye T in TC output of thermo data.
+! 0.00006528	130000	8.176	0    			! No Debye T in TC output of thermo data.
+0.0000408	220000	6.36	0    			! Original EOS values (not x(8/5))
+! 4	-0.0464	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. (8/5)*-0.029 is dkappa0/dT in HP11 Table 2d.
+4	-0.029	0	0	0	0	0			! HP model terms. 4 = HP11 switch in Table 2a. (8/5)*-0.029 is dkappa0/dT in HP11 Table 2d.
+Si=1.6 Al=3.2
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     0    0    0     0      1      0     0     0       1       ! Ideal activities calculated in subroutine HoPomelt
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!foL						
+!-2237350	-62	4.312	7	atoms				! This is really odd to have a negative entropy!
+!269.4	0	0	0	0	0	0
+!0.000092	362000	10.06	-4400.236407			
+!0	0	0	0	0	0	0
+!Si=1 Mg=2
+fo2L														
+-4484700	-124	8.624	14 atoms			! make = 2*foL and DQF = -10,000 J. Un-DQFd value = -4474700 J.
+538.8	0	0	0	0	0	0
+! 0.000184	724000	20.12	0					! No Debye T in TC output of thermo data.	
+0.000092	362000	10.06	0				! Use original values for EOS (not 2x)			
+! 4	-0.088	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. 2*-0.044 is dkappa0/dT in HP11 Table 2d.
+4	-0.044	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. 2*-0.044 is dkappa0/dT in HP11 Table 2d.
+Si=2 Mg=4
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     0    0    0     0      0      5     0      1      1       ! ^5 does not change activity output compared to having this as 1.
+1	0	0							! ASF size parameters
+-----------------------------------------------
+!faL						
+!-1463020	96	4.677	7	atoms		
+!243.7	0	0	0	0	0	0
+!0.0001071	290000	10.42	527.7289481			
+!0	0	0	0	0	0	0
+!Si=1 Fe=2
+fa2L
+-2935040	192 	8.054	14 atoms					! make = 2*faL and DQF = -9000 J - 1.3 off V (to give 8.054). Original value = -2935040 J.
+487.4	0	0	0	0	0	0
+! 0.0002142	580000	20.84	0  					! No Debye T in TC output of thermo data.	
+0.0001071	290000	10.42	0				! use original values for EOS (not 2x)			
+! 4	-0.11	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. 2*-0.055 is dkappa0/dT in HP11 Table 2d.
+4	-0.055	0	0	0	0	0				! HP model terms. 4 = HP11 switch in Table 2a. -0.055 is dkappa0/dT in HP11 Table 2d.
+Si=2 Fe=4
+!C   h2oL  q4L	abL	 kspL  anL  sil85L	Mg4M   Fe4M  Si2O8  v2Vfac
+1     0     0    0    0     0      0      0     5      1      1       ! ^5 does not change activity output compared to having this as 1.
+1	0	0							! ASF size parameters
+-----------------------------------------------
+! Cations on sites to component definitions
+h2oL q4L abL kspL anL sil85L fo2L fa2L
+1	 0	 0	 0	  0	   0	 0	  0	h2oL
+0	 1	 0	 0	  0	   0	 0	  0	q4L
+0	 0	 1	 0	  0	   0	 0	  0	abL
+0	 0	 0	 1	  0	   0	 0	  0	kspL
+0	 0	 0	 0	  1	   0	 0	  0	anL
+0	 0	 0	 0	  0	   1	 0	  0	sil85L
+0	 0	 0 	 0	  0	   0	 1	  0	Mg4M		!  raise xMg to ^5 in ideal activity
+0	 0	 0	 0	  0	   0	 0	  1	Fe4M		!  raise xFe to ^5 in ideal activity
+0	 0	 0	 0	  0	   0	 1	  1	Si2O8
+0    1   1   1    1    1     1    1 v2Vfac		!  vacancy, (1-h2o)
+-----------------------------------------------
+28	Number of W terms
+!     WH    WS   Wv     ID1  ID2 
+    17000  0  -0.5    	2	1	W(qL4,h2oL)   
+    12000  0  -0.4	    2	3   W(qL4,abL)    
+    -2000  0  -0.5   	2	4	W(qL4,kspL)   
+     5000  0     0      2	5	W(qL4,anL)    
+    12000  0     0      2	6	W(qL4,silL)   
+    12000  0  -0.4    	2	7	W(qL4,foL2)    
+    14000  0     0    	2	8	W(qL4,faL2)    
+    -6000  0   3.0   	3	4	W(abL,kspL)  
+     0000  0     0      3	5	W(abL,anL)   
+    12000  0     0      3	6	W(abL,silL85)  
+    10000  0     0      3	7	W(abL,foL2)   
+     2000  0     0   	3	8	W(abL,faL2)   
+    -1500  0  -0.3   	3	1	W(abL,h2oL)  
+     0000  0  -1.0      4	5	W(kspL,anL)  
+    12000  0     0      4	6	W(kspL,silL85) 
+    12000  0     0   	4	7	W(kspL,foL2)  
+    12000  0     0   	4	8	W(kspL,faL2)  
+     9500  0  -0.3   	4	1	W(kspL,h2oL) 
+     0000  0     0      5	6	W(anL,silL85)  
+     0000  0     0    	5	7	W(anL,foL2)   
+     0000  0     0    	5	8	W(anL,faL2)   
+     7500  0   -0.5    	5	1	W(anL,h2oL)  
+    12000  0     0      6	7	W(silL85,foL)  
+    12000  0     0      6	8	W(silL85,faL)  
+    11000  0     0      6	1	W(silL85,h2oL) 
+    18000  0     0   	7	8	W(foL2,faL2)   
+    11000  0  -0.5   	7	1	W(foL2,h2oL)  
+    12000  0     0   	8	1	W(faL2,h2oL)  
+---------------------------------- 
+0	!List of new variables
+*****************************************************************************************************************                                                   											
+2070        Calcite
+ 1               201               0               0                                                                                                                                                                                                           
+cc	Calcite
+-1207760	92.5	3.689				
+140.9	-858.4	-950700	0	0	0.005029	0
+0.0000252	733000	4.06	426.4635124				
+1	1240	0.01	0.04	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Ca=1 CO2=1
+******************************************************************************************************************
+2071        Aragonite
+ 1               201               0               0                                                                                                                                                                                                           
+arag	Aragonite
+-1207650	89.8	3.415				
+167.1	-1564.9	162000	0	0	0.010695	0
+0.0000614	614000	5.87	435.9016393			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Ca=1 CO2=1
+******************************************************************************************************************
+2073        Dol-Ank
+2               0                9              2               0     0
+dol	Dolomite
+-2326220	156.1	6.429				
+358.9	-3456.2	0	0	0	-0.004905	0
+0.0000328	943000	3.74	482.3582766			
+2	11.91	0.016	11.9	0.016	1	1
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Mg=1 Ca=1 CO2=2
+ank	Ankerite
+-1971410	188.46	6.606				
+341	-3054.8	0	0	0	-0.001161	0
+0.0000346	914000	3.88	420.6280155			
+2	11.91	0.016	11.9	0.016	1	1
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Fe=1 Ca=1 CO2=2
+******************************************************************************************************************
+2080        Rutile
+1               201                0              0
+ru	Rutile
+-944370	50.5	1.882				
+!-944360	50.5	1.882				
+90.4	-623.8	0	0	0	0.0029	0
+0.0000224	2220000	4.24	457.0037239			
+0	0	0	0	0	0	0	! HP model switch and values
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Ti=1
+*****************************************************************************************************************                                                                                                                                                                                                                               
+2081           IlmeniteHematite
+5                203                8             0                  
+C      FeA  TiA	  MgA  MnA  Fe3A  FeB  TiB  Fe3B			! Site variables
+0       1    2     3    4    5     6    7     8 			! Indexes of sites
+        1    1     1    1    1     1    1     1 			! Site multiplicity ('site variables')
+-----------------------------------------------
+oilm	OrdIlmenite
+!Ilmenite (ilm) -1230.43 0.84 109.50 3.169 0.1389 0.5081 -1288.8 -0.4637 2.40 1700.0 8.30 -0.0049 1
+-1230450.   109.50    3.169 
+!-1244057.5	118.926	3.169				
+138.9	-463.7	-1288800	0	0	0.005081	0
+0.000024	1700000	8.3	375.2999294			
+0	0	0	0	0	0	0
+!1	1900	12	0.02	0	0	0				! HP model terms. 1 = HP11 switch in Table 2b (Landau). HP model (0=ideal, 1=Landau, 2=Bragg-Williams, 4=bulk modulus)
+!oilm: DQF = 1.4441  0.0015923 T  0.018364 P
+1	1444.1	1.59230	 0.018364			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Fe=1 Ti=1
+!C  FeA  TiA  MgA  MnA  Fe3A  FeB  TiB  Fe3B			! Site variables
+1    1    0    0    0    0     0    1    0
+1  0  0							! ASF size parameter
+-----------------------------------------------
+dilm              DisordIlm
+-1230450.   109.50    3.169 
+!-1228457.2	107.4	3.169				
+138.9	-463.7	-1288800	0	0	0.005081	0
+0.000024	1700000	8.3	375
+0	0	0	0	0	0	0
+!1	1900	12	0.02	0	0	0				! HP model terms. 1 = HP11 switch in Table 2b (Landau).
+!dilm: DQF = 17.0444  0.0131183 T  0.018364 P
+1	17044.4	 13.1183 	0.018364			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Fe=1 Ti=1
+!C  FeA  TiA  MgA  MnA  Fe3A  FeB  TiB  Fe3B			! Site variables
+4   0.5  0.5   0    0    0    0.5   0.5   0
+1  0  0
+-----------------------------------------------
+hem	             Hematite
+-825610	87.4	3.027				
+163.9	-657.6	-2257200	0	0	0	0
+0.0000279	2230000	4.04	444.6488294			
+1	955 	15.6	0	0	0	0				! HP model terms. 1 = HP11 switch in Table 2b (Landau).
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Fe3=2
+!C  FeA  TiA  MgA  MnA  Fe3A  FeB  TiB  Fe3B			! Site variables
+1    0    0    0    0    1     0    0    1
+1  0  0							! ASF size parameter
+-----------------------------------------------
+geik	          Geikilite
+-1568960	73.6	3.086				
+151	-652.2	-1890400	0	0	0	0
+0.0000215	1700000	8.3	503
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Mg=1 Ti=1
+!C  FeA  TiA  MgA  MnA  Fe3A  FeB  TiB  Fe3B			! Site variables
+1    0    0    1    0    0     0    1    0
+1  0  0							! ASF size parameter
+-----------------------------------------------
+pnt	         Pyrophanite				Addded to file April 15 , 2007
+-1361950	105.5	3.288				
+143.5	-407.6	-1940700	0	0	0.003373	0
+0.000024	1700000	8.3	386.2018882			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Mn=1 Ti=1
+!C  FeA  TiA  MgA  MnA  Fe3A  FeB  TiB  Fe3B			! Site variables
+1    0    0    0    1    0     0    1    0
+1  0  0							! ASF size parameter
+-----------------------------------------------
+! Cations on sites to component definitions
+ oilm  dilm  hem  geik  pnt
+   1   0.5    0    0     0   FeA
+   0   0.5    0    0     0   TiA
+   0    0     0    1     0   MgA
+   0    0     0    0     1   MnA
+   0    0     1    0     0   Fe3A
+   0   0.5    0    0     0   FeB
+   1   0.5    0    1     1   TiB
+   0    0     1    0     0   Fe3B
+-----------------------------------------------
+10	Number of W terms
+!  WH   WS  Wv    ID1  ID2 
+15600	0	0		1  2	(oilm,dilm)
+26600	0	0		1  3	(oilm,hem)
+4000	0	0		1  4	(oilm,geik)
+2000	0	0		1  5	(oilm,pnt)
+11000	0	0		2  3	(dilm,hem)
+4000	0	0		2  4	(dilm,geik)
+2000	0	0		2  5	(dilm,pnt)
+36000	0	0		3  4	(hem,geik)
+25000	0	0		3  5	(hem,pnt)
+4000	0	0		4  5	(geik,pnt)
+---------------------------------- 
+0	!List of new variables
+******************************************************************************************************************
+2082            Magnt-Sp  ! HP11 spinel-magnetite (actually White et al. 2002). Copied across from HP11_DS62_DQF_3_FeTi.dat.
+4                206                6             0                  
+C      MgM1   FeM1  AlM2  Fe3M2  TiM2	Fe2M2			! Site variables
+0       1      2     3      4      5  	6		! Indexes of sites
+        1      1     2      2      2	2
+-----------------------------------------------
+Hercynite
+-1953030	113.9	4.075				
+216.7	-1178.3	-2430200	0	0	0.005868	0
+0.0000206	1922000	4.04	468
+2	18300	0	13600	0	2	1
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Al=2 Fe=1  
+! C    MgM1   FeM1  AlM2  Fe3M2  TiM2	Fe2M2		! Site variables
+0       0      1     1      0      0  	 0		! Indexes of sites, for ideal activities. Al & Fe3 are only 1 as per TC a-x model.
+1  0  0							! ASF size parameter
+-----------------------------------------------
+Spinel
+-2301190	82	3.978				
+222.9	-1551	-1686000	0	0	0.006127	0
+0.0000193	1922000	4.04	586
+2	8000	0	1200	0	2	0.5
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Al=2 Mg=1
+! C    MgM1   FeM1  AlM2  Fe3M2  TiM2	Fe2M2		! Site variables
+0       1      0     1      0      0  	 0		! Indexes of sites, for ideal activities. Al & Fe3 are only 1 as per TC a-x model.
+1  0  0							! ASF size parameter
+-----------------------------------------------
+Magnetite
+-1114500	146.9	4.452				
+262.5	-1655.7	-1926200	0	0	-0.007205	0
+0.0000371	1857000	4.05	387.8112303			
+1	848	35.	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Fe3=2 Fe=1
+! C    MgM1   FeM1  AlM2  Fe3M2  TiM2	Fe2M2		! Site variables
+0       0      1     0      1      0  	  0		! Indexes of sites, for ideal activities. Al & Fe3 are only 1 as per TC a-x model.
+1  0  0							! ASF size parameter
+-----------------------------------------------
+Ulvšspinel
+-1491120	180	4.682				
+-102.6	5270.7	-9144500	0	0	0.14252	0
+0.0000386	1857000	4.05	330.7801671				
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Ti=1 Fe=1 							! note that for TC model there's a fictive Fe=1, as the other Fe would go on the M2 site with Ti.
+! C    MgM1   FeM1  AlM2  Fe3M2  TiM2	Fe2M2		! Site variables
+0       0      1     0      0      1  	 0		! Indexes of sites, for ideal activities. Al & Fe3 are only 1 as per TC a-x model. 
+1  0  0							! ASF size parameter
+-----------------------------------------------
+! Cations on sites to component definitions
+ herc  sp  mt  usp
+   0    1   0   0  MgM1
+   1    0   1   1  FeM1
+   2    2   0   0  AlM2
+   0    0   2   0  Fe3M2
+   0    0   0   1  TiM2  
+   0    0   0   1  Fe2M2  
+-----------------------------------------------
+6	Number of W terms
+!  WH   WS  Wv    ID1  ID2 
+   0	0	0		1  2   	!(herc,sp)
+ 18500	0	0		1  3	!(herc,mt)
+ 27000	0	0		1  4	!(herc,usp)
+ 40000	0	0		2  3	!(sp,mt)
+ 30000	0	0		2  4	!(sp,usp)
+   0	0	0		3  4	!(mt,usp)
+---------------------------------- 
+0	!List of new variables
+*****************************************************************************************************************                                                   											
+2111            Corundum
+1               201               0                0                                                                                                                                                                                                               
+Corundum
+-1675270	50.9	2.558	
+139.5	-589.2	-2460600	0	0	0.00589	0	
+0.000018	2540000	4.34	639.9518652			
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Al=2
+******************************************************************************************************************                                                                                                                                                                                                                              
+2083            Brucite
+1               201               0                0                                                                                                                                                                                                               
+Brucite
+-925650. 	63.20	2.463	
+158.4	-1171.3	-1052300.	0	0	-.004076	0
+0.0000620	415000.0	6.45	640
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Mg=1 H2O=1
+******************************************************************************************************************                                                                                                                                                                                                                              
+2084        Titanite
+1               201               0                0                                                                                                                                                                                                               
+ttn
+-2601660	124	5.565				
+227.9	-894.3	-3539500	0	0	0.002924	0
+0.0000158	1017000	9.85	484.7766636		
+1	485	0.4	0.005	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Ti=1 Ca=1
+*****************************************************************************************************************                                                   											
+2112            Sapphirine
+ 3    203    5     0
+C    SiT    AlT   AlM1     XMg     XFe
+0     1      2      3       4       5
+      6      6      8       8       8
+------------------------------
+! (Mg,Al)8 (Al,Si)6 O10 = formula
+Mg Sapphirine(spr4)
+-11022020.000	425.5000	19.9000
+ 1133.10000	-8180.600	-8816600.0	0	0	-0.0075960	0.00
+ 0.000020500	2500000.00		4.0400	    500
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=8 Mg=4 Fe=0
+! Mg4Al4 Al4Si2 O20
+!C SiT  AlT  AlM1  XMg  XFe
+!1.  2    4     4    4    0     
+12.   1    0     0    2    0     
+1	0	0
+---------------------------------------------
+Mg Sapphirine(spr5)
+-11135570.000       419.5000        19.7500
+ 1103.40000      -7409.200	-10957000.0	0	0	0.0010150        0.00
+ 0.000020600        2500000.00         4.0400       500 
+0	0	0	0	0	0	0   
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=1 Al=10 Mg=3 Fe=0
+! Mg3Al5 Al5Si1 O20
+!C SiT  AlT  AlM1  XMg  XFe
+!1.  1    5     5    3    0
+3.072   0    1     2    0    0
+1	0	0
+-----------------------------------------------
+Fe Sapphirine(fspr)
+-9659530.000       485.0000        19.9230
+ 1132.90000    -7036.600	-10420200.0	0	0     -0.0073480         0.00
+ 0.000019600        2500000.00         4.0400       500   
+0	0	0	0	0	0	0
+0	0	0	0			!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=8 Mg=0 Fe=4
+! Fe4Al4 Al4Si2 O20
+!C SiT  AlT  AlM1  XMg  XFe
+!1.  2    4     4    0    4
+12.  1    0     0    0    2     
+1	0	0
+------------------------------------------------
+!Cations on sites to component definitions
+spr4     spr5     fspr
+ 2         1        2    SiT
+ 4         5        4    AlT
+ 4         5        4    AlM1
+ 4         3        0    XMg
+ 0         0        4    XFe
+-----------------------------------------------
+ 3		number of non-ideal terms
+!WH      WS   Wv     ID1  ID2 
+10000    0  -0.02    1     2   !W(spr4,spr5)
+16000    0    0      1     3   !W(spr4,fspr)
+19000    0  -0.02    2     3   !W(spr5,fspr)
+----------------------------------  
+0		! List of new variables
+******************************************************************************************************************                                                                                                                                                                                                                              
+2009            	Lawsonite  !Lawsonite (law) -4868.61 0.81 229.00 10.132      0.6878 0.1566 375.9 -7.1792          2.65 1229.0 5.45 -0.0044
+1    201    0     0
+Law		
+-4868610   229.00      10.132
+687.8      -7179.2    375900.    0     0    0.001566     0  
+0.0000265     1229000.    5.45    575.
+0	0	0	0	0	0	0
+0	0	0	0				!DQF terms  DQFswitch, DQFH, DQFS, DQFV
+Si=2 Al=2 Ca=1 H2O=2
+******************************************************************************************************************    
+2047              Stilpnomelane				From HP11
+2	203	6	0
+C    Si   Al   Mg     Fe     K	     H2O               !Names of site atoms
+0    1     2    3       4      5	6              !Indexes of site atoms
+     8     2    5       5     0.5	6.25           !Site multiplicities for each site
+----------------------------------
+MgStilp
+!Stilpnomelane (mstp) -14288.03 25.51 847.40 36.577 1.8622 -1.4018 -8983.1 -14.9230 3.71 513.0 7.33 -0.0143	HP11
+-14288030.     847.40    36.577 
+1862.2  -14923.0    -8983100.   0    0     -0.014018     0  
+0.0000371 513000. 7.33  500.
+0	0	0	0	0	0	0
+0	0	0	0
+Si=8 Al=2 Mg=5   K=0.5 H2O=6.25
+!C    Si   Al   Mg     Fe     K	     H2O               !Names of site atoms
+1     0    0    5     0       0         0	! ideal activities
+1	0	0			 	! ASF size parameter
+----------------------------------
+FeStilp
+!Stilpnomelane (fstp) -12550.45 9.09 930.20 37.239 1.9443 -1.2289 -4840.2 -16.6350 3.68 513.0 7.33 -0.0143	HP11
+-12550450.    930.20   37.239 
+1944.3  -16635.0   -4840200.   0   0     -0.012289     0
+ 0.0000368   513000.   7.33   500.
+0	0	0	0	0	0	0
+0	0	0	0
+Si=8 Al=2 Fe=5   K=0.5 H2O=6.25
+!C    Si   Al   Mg     Fe     K	     H2O               !Names of site atoms
+1     0    0    0     5       0         0	! ideal activities
+1	0	0			 	! ASF size parameter
+----------------------------------
+! Phase component to site transform
+MgStilp	FeStilp
+8	8	Si
+2	2	Al
+5	0	Mg
+0	5	Fe
+0.5	0.5	K
+6.25	6.25	H2O
+----------------------------------
+0	! number of sites with Margules terms
+---------------------------------
+0 	!Number of new variables
+******************************************************************************************************************      
